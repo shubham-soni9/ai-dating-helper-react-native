@@ -1,6 +1,8 @@
 import { Text, View } from 'react-native';
+import { useTheme } from '@/theme/ThemeProvider';
 
 export const EditScreenInfo = ({ path }: { path: string }) => {
+  const { colors } = useTheme();
   const title = 'Open up the code for this screen:';
   const description =
     'Change any of the text, save the file, and your app will automatically update.';
@@ -8,11 +10,15 @@ export const EditScreenInfo = ({ path }: { path: string }) => {
   return (
     <View>
       <View className={styles.getStartedContainer}>
-        <Text className={styles.getStartedText}>{title}</Text>
+        <Text className={styles.getStartedText} style={{ color: colors.text }}>
+          {title}
+        </Text>
         <View className={styles.codeHighlightContainer + styles.homeScreenFilename}>
-          <Text>{path}</Text>
+          <Text style={{ color: colors.mutedText }}>{path}</Text>
         </View>
-        <Text className={styles.getStartedText}>{description}</Text>
+        <Text className={styles.getStartedText} style={{ color: colors.mutedText }}>
+          {description}
+        </Text>
       </View>
     </View>
   );

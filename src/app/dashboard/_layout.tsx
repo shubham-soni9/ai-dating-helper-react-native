@@ -1,14 +1,16 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/theme/ThemeProvider';
 
 export default function DashboardLayout() {
+  const { colors } = useTheme();
   return (
     <Tabs
       initialRouteName="home"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#2563eb',
-        tabBarInactiveTintColor: '#6b7280',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.tabInactive,
       }}>
       <Tabs.Screen
         name="home"

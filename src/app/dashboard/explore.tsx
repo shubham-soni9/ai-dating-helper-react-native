@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { View, Text, Pressable, useWindowDimensions, Animated } from 'react-native';
+import { useTheme } from '@/theme/ThemeProvider';
 import PagerView, { PagerViewOnPageScrollEvent } from 'react-native-pager-view';
 
 const TABS = [
@@ -13,6 +14,7 @@ export default function ExploreTab() {
   const { width } = useWindowDimensions();
   const tabWidth = width / TABS.length;
   const indicatorX = useRef(new Animated.Value(0)).current;
+  const { colors } = useTheme();
 
   const onPageScroll = (e: PagerViewOnPageScrollEvent) => {
     const { position, offset } = e.nativeEvent;
@@ -23,7 +25,7 @@ export default function ExploreTab() {
   const goTo = (index: number) => pagerRef.current?.setPage(index);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <View style={{ paddingTop: 8 }}>
         <View style={{ flexDirection: 'row' }}>
           {TABS.map((t, i) => (
@@ -31,37 +33,37 @@ export default function ExploreTab() {
               key={t.key}
               onPress={() => goTo(i)}
               style={{ width: tabWidth, paddingVertical: 12, alignItems: 'center' }}>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: '#111827' }}>{t.title}</Text>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }}>{t.title}</Text>
             </Pressable>
           ))}
         </View>
-        <View style={{ height: 2, backgroundColor: '#e5e7eb' }} />
+        <View style={{ height: 2, backgroundColor: colors.border }} />
         <Animated.View
           style={{
             height: 3,
             width: tabWidth,
-            backgroundColor: '#2563eb',
+            backgroundColor: colors.primary,
             transform: [{ translateX: indicatorX }],
           }}
         />
       </View>
 
       <PagerView ref={pagerRef} style={{ flex: 1 }} initialPage={0} onPageScroll={onPageScroll}>
-        <View key="trending" style={{ flex: 1, backgroundColor: '#f0f9ff', padding: 16 }}>
-          <Text style={{ fontSize: 20, fontWeight: '600', color: '#0f172a' }}>Trending</Text>
-          <Text style={{ marginTop: 8, color: '#334155' }}>
+        <View key="trending" style={{ flex: 1, backgroundColor: colors.surface, padding: 16 }}>
+          <Text style={{ fontSize: 20, fontWeight: '600', color: colors.text }}>Trending</Text>
+          <Text style={{ marginTop: 8, color: colors.mutedText }}>
             Curated content that’s popular right now.
           </Text>
         </View>
-        <View key="nearby" style={{ flex: 1, backgroundColor: '#f9fafb', padding: 16 }}>
-          <Text style={{ fontSize: 20, fontWeight: '600', color: '#0f172a' }}>Nearby</Text>
-          <Text style={{ marginTop: 8, color: '#334155' }}>
+        <View key="nearby" style={{ flex: 1, backgroundColor: colors.surface, padding: 16 }}>
+          <Text style={{ fontSize: 20, fontWeight: '600', color: colors.text }}>Nearby</Text>
+          <Text style={{ marginTop: 8, color: colors.mutedText }}>
             Discover items close to your location.
           </Text>
         </View>
-        <View key="top" style={{ flex: 1, backgroundColor: '#fff7ed', padding: 16 }}>
-          <Text style={{ fontSize: 20, fontWeight: '600', color: '#0f172a' }}>Top Rated</Text>
-          <Text style={{ marginTop: 8, color: '#334155' }}>
+        <View key="top" style={{ flex: 1, backgroundColor: colors.surface, padding: 16 }}>
+          <Text style={{ fontSize: 20, fontWeight: '600', color: colors.text }}>Top Rated</Text>
+          <Text style={{ marginTop: 8, color: colors.mutedText }}>
             Highly rated picks handpicked for you.
           </Text>
         </View>

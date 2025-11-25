@@ -2,6 +2,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { View, Button } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEvent } from 'expo';
+import { useTheme } from '@/theme/ThemeProvider';
 
 export default function MediaVideo() {
   const params = useLocalSearchParams<{ uri: string }>();
@@ -10,8 +11,9 @@ export default function MediaVideo() {
     p.loop = true;
   });
   const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
+  const { colors } = useTheme();
   return (
-    <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background, justifyContent: 'center' }}>
       <VideoView
         style={{ flex: 1 }}
         player={player}

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { View, Text, Pressable, Image, FlatList, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as VideoThumbnails from 'expo-video-thumbnails';
+import { useTheme } from '@/theme/ThemeProvider';
 
 type MediaAsset = {
   uri: string;
@@ -13,6 +14,7 @@ type MediaAsset = {
 export default function MediaPicker() {
   const [assets, setAssets] = useState<MediaAsset[]>([]);
   const router = useRouter();
+  const { colors } = useTheme();
 
   const pickMedia = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -74,30 +76,30 @@ export default function MediaPicker() {
             position: 'absolute',
             right: 6,
             bottom: 6,
-            backgroundColor: 'rgba(0,0,0,0.6)',
+            backgroundColor: colors.overlay,
             borderRadius: 12,
             paddingHorizontal: 6,
             paddingVertical: 2,
           }}>
-          <Text style={{ color: 'white', fontSize: 12 }}>▶︎</Text>
+          <Text style={{ color: colors.onPrimary, fontSize: 12 }}>▶︎</Text>
         </View>
       </View>
     </Pressable>
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <View style={{ padding: 16 }}>
         <Pressable
           onPress={pickMedia}
           style={{
-            backgroundColor: '#2563eb',
+            backgroundColor: colors.primary,
             paddingHorizontal: 16,
             paddingVertical: 12,
             borderRadius: 8,
             alignSelf: 'center',
           }}>
-          <Text style={{ color: 'white', fontSize: 16 }}>Pick Images/Videos</Text>
+          <Text style={{ color: colors.onPrimary, fontSize: 16 }}>Pick Images/Videos</Text>
         </Pressable>
       </View>
       <FlatList
