@@ -2,11 +2,12 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { View, Text, Pressable, Image, FlatList, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useVideoPlayer, VideoView } from 'expo-video';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 
 type MediaAsset = {
   uri: string;
   type: 'image' | 'video';
+  thumbUri?: string;
 };
 
 export default function MediaPicker() {
@@ -25,14 +26,24 @@ export default function MediaPicker() {
       quality: 1,
     });
     if (!result.canceled) {
-      const next: MediaAsset[] = result.assets.map(
-        (a) =>
-          ({
-            uri: a.uri,
-            type: a.type === 'video' ? 'video' : 'image',
-          }) as const
+      const base: MediaAsset[] = result.assets.map((a) => ({
+        uri: a.uri,
+        type: a.type === 'video' ? 'video' : 'image',
+      }));
+      const withThumbs: MediaAsset[] = await Promise.all(
+        base.map(async (item) => {
+          if (item.type === 'video') {
+            try {
+              const { uri } = await VideoThumbnails.getThumbnailAsync(item.uri, { time: 1000 });
+              return { ...item, thumbUri: uri };
+            } catch {
+              return item;
+            }
+          }
+          return item;
+        })
       );
-      setAssets(next);
+      setAssets(withThumbs);
     }
   };
 
@@ -48,20 +59,31 @@ export default function MediaPicker() {
     </Pressable>
   );
 
-  const VideoTile = ({ item }: { item: MediaAsset }) => {
-    const player = useVideoPlayer(item.uri, (p) => {
-      p.muted = true;
-      p.loop = true;
-      p.play();
-    });
-    return (
-      <Pressable
-        onPress={() => router.push({ pathname: '/media-video', params: { uri: item.uri } })}
-        style={{ flex: 1, aspectRatio: 1, borderRadius: 8, overflow: 'hidden' }}>
-        <VideoView style={{ width: '100%', height: '100%' }} player={player} contentFit="cover" />
-      </Pressable>
-    );
-  };
+  const VideoTile = ({ item }: { item: MediaAsset }) => (
+    <Pressable
+      onPress={() => router.push({ pathname: '/media-video', params: { uri: item.uri } })}
+      style={{ flex: 1, aspectRatio: 1, borderRadius: 8, overflow: 'hidden' }}>
+      <View style={{ width: '100%', height: '100%' }}>
+        <Image
+          source={{ uri: item.thumbUri || item.uri }}
+          style={{ width: '100%', height: '100%' }}
+          resizeMode="cover"
+        />
+        <View
+          style={{
+            position: 'absolute',
+            right: 6,
+            bottom: 6,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            borderRadius: 12,
+            paddingHorizontal: 6,
+            paddingVertical: 2,
+          }}>
+          <Text style={{ color: 'white', fontSize: 12 }}>▶︎</Text>
+        </View>
+      </View>
+    </Pressable>
+  );
 
   return (
     <View style={{ flex: 1 }}>
