@@ -19,6 +19,17 @@ export default function App() {
         }}>
         <Text style={{ color: 'white', fontSize: 16 }}>Open Media Picker</Text>
       </Pressable>
+      <View style={{ height: 12 }} />
+      <Pressable
+        onPress={() => router.push('/dashboard')}
+        style={{
+          backgroundColor: '#10b981',
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+          borderRadius: 8,
+        }}>
+        <Text style={{ color: 'white', fontSize: 16 }}>Open Dashboard</Text>
+      </Pressable>
       <StatusBar style="auto" />
     </View>
   );
