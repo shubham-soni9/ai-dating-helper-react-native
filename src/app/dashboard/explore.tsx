@@ -1,7 +1,16 @@
-import { useRef } from 'react';
-import { View, Text, Pressable, useWindowDimensions, Animated } from 'react-native';
+import { useRef, useState, useEffect, useCallback } from 'react';
+import {
+  View,
+  Text,
+  Pressable,
+  useWindowDimensions,
+  Animated,
+  ActivityIndicator,
+  FlatList,
+} from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import PagerView, { PagerViewOnPageScrollEvent } from 'react-native-pager-view';
+import { Image as ExpoImage } from 'expo-image';
 
 const TABS = [
   { key: 'trending', title: 'Trending' },
@@ -15,6 +24,44 @@ export default function ExploreTab() {
   const tabWidth = width / TABS.length;
   const indicatorX = useRef(new Animated.Value(0)).current;
   const { colors } = useTheme();
+
+  type RandomUser = {
+    name: { first: string; last: string };
+    email: string;
+    login: { uuid: string };
+    nat: string;
+    picture: { thumbnail: string; medium: string };
+    location: { city: string; country: string };
+    phone: string;
+  };
+
+  const [topUsers, setTopUsers] = useState<RandomUser[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const loadTopUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('https://randomuser.me/api/?results=10');
+      const json = await res.json();
+      setTopUsers(json.results as RandomUser[]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadTopUsers();
+  }, [loadTopUsers]);
+
+  const onRefreshUsers = async () => {
+    setRefreshing(true);
+    try {
+      await loadTopUsers();
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const onPageScroll = (e: PagerViewOnPageScrollEvent) => {
     const { position, offset } = e.nativeEvent;
@@ -61,11 +108,49 @@ export default function ExploreTab() {
             Discover items close to your location.
           </Text>
         </View>
-        <View key="top" style={{ flex: 1, backgroundColor: colors.surface, padding: 16 }}>
-          <Text style={{ fontSize: 20, fontWeight: '600', color: colors.text }}>Top Rated</Text>
-          <Text style={{ marginTop: 8, color: colors.mutedText }}>
-            Highly rated picks handpicked for you.
-          </Text>
+        <View key="top" style={{ flex: 1, backgroundColor: colors.surface }}>
+          {loading && topUsers.length === 0 ? (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator size="small" color={colors.primary} />
+              <Text style={{ marginTop: 8, color: colors.mutedText }}>Loading…</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={topUsers}
+              keyExtractor={(item) => item.login.uuid}
+              refreshing={refreshing}
+              onRefresh={onRefreshUsers}
+              contentContainerStyle={{ padding: 16 }}
+              ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+              renderItem={({ item }) => (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: 12,
+                    borderRadius: 12,
+                    backgroundColor: colors.background,
+                    borderColor: colors.border,
+                    borderWidth: 1,
+                  }}>
+                  <ExpoImage
+                    source={{ uri: item.picture.medium }}
+                    style={{ width: 48, height: 48, borderRadius: 24 }}
+                    contentFit="cover"
+                  />
+                  <View style={{ marginLeft: 12, flex: 1 }}>
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }}>
+                      {item.name.first} {item.name.last}
+                    </Text>
+                    <Text style={{ marginTop: 2, color: colors.mutedText }}>{item.email}</Text>
+                    <Text style={{ marginTop: 2, color: colors.mutedText }}>
+                      {item.location.city}, {item.location.country} · {item.nat}
+                    </Text>
+                  </View>
+                </View>
+              )}
+            />
+          )}
         </View>
       </PagerView>
     </View>
