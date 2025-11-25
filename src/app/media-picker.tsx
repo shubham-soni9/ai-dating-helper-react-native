@@ -2,7 +2,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { View, Text, Pressable, Image, FlatList, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Video, ResizeMode } from 'expo-av';
+import { useVideoPlayer, VideoView } from 'expo-video';
 
 type MediaAsset = {
   uri: string;
@@ -36,30 +36,32 @@ export default function MediaPicker() {
     }
   };
 
-  const renderItem = ({ item }: { item: MediaAsset }) => (
+  const ImageTile = ({ item }: { item: MediaAsset }) => (
     <Pressable
-      onPress={() =>
-        item.type === 'image'
-          ? router.push({ pathname: '/media-image', params: { uri: item.uri } })
-          : router.push({ pathname: '/media-video', params: { uri: item.uri } })
-      }
+      onPress={() => router.push({ pathname: '/media-image', params: { uri: item.uri } })}
       style={{ flex: 1, aspectRatio: 1, borderRadius: 8, overflow: 'hidden' }}>
-      {item.type === 'image' ? (
-        <Image
-          source={{ uri: item.uri }}
-          style={{ width: '100%', height: '100%' }}
-          resizeMode="cover"
-        />
-      ) : (
-        <Video
-          source={{ uri: item.uri }}
-          style={{ width: '100%', height: '100%' }}
-          resizeMode={ResizeMode.COVER}
-          isMuted
-        />
-      )}
+      <Image
+        source={{ uri: item.uri }}
+        style={{ width: '100%', height: '100%' }}
+        resizeMode="cover"
+      />
     </Pressable>
   );
+
+  const VideoTile = ({ item }: { item: MediaAsset }) => {
+    const player = useVideoPlayer(item.uri, (p) => {
+      p.muted = true;
+      p.loop = true;
+      p.play();
+    });
+    return (
+      <Pressable
+        onPress={() => router.push({ pathname: '/media-video', params: { uri: item.uri } })}
+        style={{ flex: 1, aspectRatio: 1, borderRadius: 8, overflow: 'hidden' }}>
+        <VideoView style={{ width: '100%', height: '100%' }} player={player} contentFit="cover" />
+      </Pressable>
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -79,7 +81,9 @@ export default function MediaPicker() {
       <FlatList
         data={assets}
         keyExtractor={(item, index) => item.uri + index}
-        renderItem={renderItem}
+        renderItem={({ item }) =>
+          item.type === 'image' ? <ImageTile item={item} /> : <VideoTile item={item} />
+        }
         numColumns={3}
         contentContainerStyle={{ padding: 8, gap: 8 }}
         columnWrapperStyle={{ gap: 8 }}
