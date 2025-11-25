@@ -16,9 +16,6 @@ export default function DashboardLayout() {
           borderTopColor: colors.border,
           borderTopWidth: 1,
         },
-        sceneContainerStyle: {
-          backgroundColor: colors.background,
-        },
       }}>
       <Tabs.Screen
         name="home"

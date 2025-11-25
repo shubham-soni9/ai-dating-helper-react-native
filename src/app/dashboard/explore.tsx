@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,10 @@ import {
   FlatList,
 } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
-import PagerView, { PagerViewOnPageScrollEvent } from 'react-native-pager-view';
+import PagerView, {
+  PagerViewOnPageScrollEvent,
+  PagerViewOnPageSelectedEvent,
+} from 'react-native-pager-view';
 import { Image as ExpoImage } from 'expo-image';
 
 const TABS = [
@@ -24,6 +27,7 @@ export default function ExploreTab() {
   const tabWidth = width / TABS.length;
   const indicatorX = useRef(new Animated.Value(0)).current;
   const { colors } = useTheme();
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   type RandomUser = {
     name: { first: string; last: string };
@@ -50,10 +54,6 @@ export default function ExploreTab() {
     }
   }, []);
 
-  useEffect(() => {
-    loadTopUsers();
-  }, [loadTopUsers]);
-
   const onRefreshUsers = async () => {
     setRefreshing(true);
     try {
@@ -69,7 +69,20 @@ export default function ExploreTab() {
     indicatorX.setValue(progress);
   };
 
-  const goTo = (index: number) => pagerRef.current?.setPage(index);
+  const onPageSelected = (e: PagerViewOnPageSelectedEvent) => {
+    const { position } = e.nativeEvent;
+    setSelectedIndex(position);
+    if (position === 2 && topUsers.length === 0) {
+      loadTopUsers();
+    }
+  };
+
+  const goTo = (index: number) => {
+    pagerRef.current?.setPage(index);
+    if (index === 2 && topUsers.length === 0) {
+      loadTopUsers();
+    }
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -80,7 +93,14 @@ export default function ExploreTab() {
               key={t.key}
               onPress={() => goTo(i)}
               style={{ width: tabWidth, paddingVertical: 12, alignItems: 'center' }}>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }}>{t.title}</Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: i === selectedIndex ? '700' : '600',
+                  color: i === selectedIndex ? colors.primary : colors.text,
+                }}>
+                {t.title}
+              </Text>
             </Pressable>
           ))}
         </View>
@@ -95,7 +115,12 @@ export default function ExploreTab() {
         />
       </View>
 
-      <PagerView ref={pagerRef} style={{ flex: 1 }} initialPage={0} onPageScroll={onPageScroll}>
+      <PagerView
+        ref={pagerRef}
+        style={{ flex: 1 }}
+        initialPage={0}
+        onPageScroll={onPageScroll}
+        onPageSelected={onPageSelected}>
         <View key="trending" style={{ flex: 1, backgroundColor: colors.surface, padding: 16 }}>
           <Text style={{ fontSize: 20, fontWeight: '600', color: colors.text }}>Trending</Text>
           <Text style={{ marginTop: 8, color: colors.mutedText }}>
