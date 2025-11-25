@@ -11,6 +11,14 @@ export default function DashboardLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.tabInactive,
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
+          borderTopWidth: 1,
+        },
+        sceneContainerStyle: {
+          backgroundColor: colors.background,
+        },
       }}>
       <Tabs.Screen
         name="home"
