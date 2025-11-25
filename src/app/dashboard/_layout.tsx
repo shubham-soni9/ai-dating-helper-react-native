@@ -6,6 +6,7 @@ export default function DashboardLayout() {
     <Tabs
       initialRouteName="home"
       screenOptions={{
+        headerShown: false,
         tabBarActiveTintColor: '#2563eb',
         tabBarInactiveTintColor: '#6b7280',
       }}>
