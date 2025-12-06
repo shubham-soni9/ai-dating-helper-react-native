@@ -20,9 +20,8 @@ export default function App() {
 
   useEffect(() => {
     Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-    const revenuecatApiKey = process.env.REVENUECAT_API_KEY;
+    const revenuecatApiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
 
-    // Platform-specific API keys
     const iosApiKey = revenuecatApiKey;
     const androidApiKey = revenuecatApiKey;
 
