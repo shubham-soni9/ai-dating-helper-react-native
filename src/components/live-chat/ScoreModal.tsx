@@ -10,23 +10,27 @@ type ScoreModalProps = {
   description: string;
 };
 
-export default function ScoreModal({ visible, onHelp, score, title, description }: ScoreModalProps) {
+export default function ScoreModal({
+  visible,
+  onHelp,
+  score,
+  title,
+  description,
+}: ScoreModalProps) {
   return (
     <Modal transparent visible={visible} animationType="fade">
-      <View className="flex-1 bg-black/80 items-center justify-center px-4">
+      <View className="flex-1 items-center justify-center bg-black/80 px-4">
         <Animated.View
           entering={FadeInDown.springify()}
-          className="bg-gray-800 w-full rounded-2xl p-6 border border-gray-700 items-center">
-          <Text className="text-white font-bold text-xl mb-2 text-center">{title}</Text>
-          <Text className="text-white text-6xl font-bold my-4">{score}</Text>
-          <Text className="text-gray-400 text-center mb-8">
-            {description}
-          </Text>
+          className="w-full items-center rounded-2xl border border-gray-700 bg-gray-800 p-6">
+          <Text className="mb-2 text-center text-xl font-bold text-white">{title}</Text>
+          <Text className="my-4 text-6xl font-bold text-white">{score}</Text>
+          <Text className="mb-8 text-center text-gray-400">{description}</Text>
 
           <TouchableOpacity
             onPress={onHelp}
-            className="bg-emerald-500 w-full py-4 rounded-xl items-center">
-            <Text className="text-white font-bold text-lg">Help me out 😉</Text>
+            className="w-full items-center rounded-xl bg-emerald-500 py-4">
+            <Text className="text-lg font-bold text-white">Help me out 😉</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>

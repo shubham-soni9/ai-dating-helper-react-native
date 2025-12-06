@@ -49,8 +49,7 @@ export const CustomTextInput: React.FC<CustomTextInputProps> = ({
           styles.inputContainer,
           isFocused && styles.inputContainerFocused,
           !!error && styles.inputContainerError,
-        ]}
-      >
+        ]}>
         <TextInput
           style={[styles.input, style]}
           placeholderTextColor={authColors.secondaryText}

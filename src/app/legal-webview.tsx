@@ -13,7 +13,7 @@ export default function LegalWebView() {
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <Stack.Screen options={{ headerShown: false }} />
-      
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.closeButton}>
           <Ionicons name="close" size={24} color={authColors.text} />
@@ -35,7 +35,7 @@ export default function LegalWebView() {
         />
       ) : (
         <View style={styles.errorContainer}>
-           <Text style={styles.errorText}>No URL provided</Text>
+          <Text style={styles.errorText}>No URL provided</Text>
         </View>
       )}
     </SafeAreaView>

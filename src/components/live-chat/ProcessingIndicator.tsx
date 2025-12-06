@@ -12,7 +12,7 @@ export default function ProcessingIndicator({ step }: ProcessingIndicatorProps) 
   return (
     <Animated.View entering={FadeIn} className="items-center justify-center py-8">
       <ActivityIndicator size="large" color="#10b981" />
-      <Text className="text-gray-400 mt-4 text-sm">{STEPS[step]}</Text>
+      <Text className="mt-4 text-sm text-gray-400">{STEPS[step]}</Text>
     </Animated.View>
   );
 }

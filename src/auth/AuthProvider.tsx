@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { AuthSession as SessionType, UserProfile } from '@/types/auth';
 import { SubscriptionState } from '@/types/subscription';
 import * as SecureStore from 'expo-secure-store';
+import Purchases from 'react-native-purchases';
 
 type OAuthProvider = 'google' | 'facebook';
 
@@ -97,6 +98,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data.subscription?.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    const sync = async () => {
+      try {
+        const info = await Purchases.getCustomerInfo();
+        const hasActive = Object.keys(info.entitlements.active).length > 0;
+        setSubscription({ isSubscribed: hasActive, trialActive: false });
+      } catch {}
+    };
+    sync();
+    const unsubscribe = Purchases.addCustomerInfoUpdateListener((info) => {
+      const hasActive = Object.keys(info.entitlements.active).length > 0;
+      setSubscription({ isSubscribed: hasActive, trialActive: false });
+    });
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [initialized]);
 
   const signInWithEmailMagicLink = async (email: string) => {
     await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });

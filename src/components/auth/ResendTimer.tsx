@@ -7,10 +7,7 @@ interface ResendTimerProps {
   onResend: () => void;
 }
 
-export const ResendTimer: React.FC<ResendTimerProps> = ({
-  initialSeconds,
-  onResend,
-}) => {
+export const ResendTimer: React.FC<ResendTimerProps> = ({ initialSeconds, onResend }) => {
   const [seconds, setSeconds] = useState(initialSeconds);
 
   useEffect(() => {
@@ -24,11 +21,10 @@ export const ResendTimer: React.FC<ResendTimerProps> = ({
 
   // Reset timer when initialSeconds changes (if we want to restart it from parent)
   useEffect(() => {
-     if (initialSeconds > 0) {
-         setSeconds(initialSeconds);
-     }
+    if (initialSeconds > 0) {
+      setSeconds(initialSeconds);
+    }
   }, [initialSeconds]);
-
 
   if (seconds > 0) {
     return (

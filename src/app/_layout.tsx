@@ -18,7 +18,7 @@ export default function RootLayout() {
 function ThemedStack() {
   const { colors } = useTheme();
   const { subscription } = useAuth();
-  const isPaid = subscription.isSubscribed || subscription.trialActive;
+  const isPaid = subscription.isSubscribed;
   return (
     <Stack
       screenOptions={{

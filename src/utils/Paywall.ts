@@ -1,10 +1,7 @@
 import RevenueCatUI, { PAYWALL_RESULT } from 'react-native-purchases-ui';
 
-// Make sure to configure a Paywall in the Dashboard first.
-async function presentPaywall(): Promise<boolean> {
-  // Present paywall for current offering:
+export async function presentPaywall(): Promise<boolean> {
   const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
-
   switch (paywallResult) {
     case PAYWALL_RESULT.NOT_PRESENTED:
     case PAYWALL_RESULT.ERROR:

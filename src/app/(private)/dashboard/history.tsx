@@ -5,7 +5,6 @@ import { HistoryItem } from '@/types/history';
 import * as SecureStore from 'expo-secure-store';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
 export default function HistoryTab() {
   const { colors } = useTheme();
   const [items, setItems] = useState<HistoryItem[]>([]);

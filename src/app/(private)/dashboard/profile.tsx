@@ -3,8 +3,6 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/auth/AuthProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
-
 export default function ProfileTab() {
   const { colors, isDark, setMode } = useTheme();
   const { profile, signOut } = useAuth();

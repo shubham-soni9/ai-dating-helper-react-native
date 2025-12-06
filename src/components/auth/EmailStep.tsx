@@ -58,12 +58,7 @@ export const EmailStep: React.FC<EmailStepProps> = ({
 
       <View style={styles.spacer} />
 
-      <CustomButton
-        title="Continue"
-        onPress={onContinue}
-        disabled={!isValid}
-        loading={loading}
-      />
+      <CustomButton title="Continue" onPress={onContinue} disabled={!isValid} loading={loading} />
     </View>
   );
 };

@@ -10,12 +10,12 @@ type GirlMessageProps = {
 };
 
 export const GirlMessage = ({ avatar, message }: GirlMessageProps) => (
-  <View className="flex-row items-end mb-6">
-    <View className="w-8 h-8 rounded-full bg-purple-500 items-center justify-center mr-2 overflow-hidden">
+  <View className="mb-6 flex-row items-end">
+    <View className="mr-2 h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-purple-500">
       <Image source={{ uri: avatar }} style={{ width: 32, height: 32 }} />
     </View>
-    <View className="bg-gray-800 rounded-2xl rounded-bl-none px-4 py-3 max-w-[80%]">
-      <Text className="text-white text-base">{message}</Text>
+    <View className="max-w-[80%] rounded-2xl rounded-bl-none bg-gray-800 px-4 py-3">
+      <Text className="text-base text-white">{message}</Text>
     </View>
   </View>
 );
@@ -25,9 +25,9 @@ type UserMessageProps = {
 };
 
 export const UserMessage = ({ message }: UserMessageProps) => (
-  <Animated.View entering={FadeInDown} className="flex-row justify-end items-end mb-6">
-    <View className="bg-blue-600 rounded-2xl rounded-br-none px-4 py-3 max-w-[80%]">
-      <Text className="text-white text-base">{message}</Text>
+  <Animated.View entering={FadeInDown} className="mb-6 flex-row items-end justify-end">
+    <View className="max-w-[80%] rounded-2xl rounded-br-none bg-blue-600 px-4 py-3">
+      <Text className="text-base text-white">{message}</Text>
     </View>
   </Animated.View>
 );
@@ -45,10 +45,10 @@ export const WizardMessage = ({
   title = 'WIZARD SUGGESTION',
   showAvatar = true,
 }: WizardMessageProps) => (
-  <View className="flex-row items-end mb-6">
+  <View className="mb-6 flex-row items-end">
     <View className="mr-2 h-8 w-8 items-center justify-center">
       {showAvatar && (
-        <View className="h-full w-full items-center justify-center rounded-full bg-emerald-600 overflow-hidden">
+        <View className="h-full w-full items-center justify-center overflow-hidden rounded-full bg-emerald-600">
           <Ionicons name="flash" size={18} color="white" />
         </View>
       )}

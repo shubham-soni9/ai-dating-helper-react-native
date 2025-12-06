@@ -4,7 +4,6 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { ResourceItem } from '@/types/resources';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
 export default function ResourcesTab() {
   const { colors } = useTheme();
   const [items, setItems] = useState<ResourceItem[]>([]);

@@ -22,7 +22,7 @@ export const ProgressBar = ({ totalSteps, currentStep }: ProgressBarProps) => {
   });
 
   return (
-    <View className="h-1 w-full bg-gray-800 rounded-full overflow-hidden mt-2">
+    <View className="mt-2 h-1 w-full overflow-hidden rounded-full bg-gray-800">
       <Animated.View style={[animatedStyle, { height: '100%' }]}>
         <LinearGradient
           colors={['#FF006B', '#FF4D00']}

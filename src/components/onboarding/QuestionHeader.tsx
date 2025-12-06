@@ -11,17 +11,11 @@ interface QuestionHeaderProps {
 export const QuestionHeader = ({ step, question, description }: QuestionHeaderProps) => {
   return (
     <Animated.View entering={FadeInDown.delay(100).duration(500)} className="mb-6">
-      <Text className="text-gray-400 font-medium text-sm mb-2 uppercase tracking-wider">
+      <Text className="mb-2 text-sm font-medium uppercase tracking-wider text-gray-400">
         Question {step}
       </Text>
-      <Text className="text-white text-2xl font-bold leading-tight">
-        {question}
-      </Text>
-      {description && (
-        <Text className="text-gray-400 text-base mt-2">
-          {description}
-        </Text>
-      )}
+      <Text className="text-2xl font-bold leading-tight text-white">{question}</Text>
+      {description && <Text className="mt-2 text-base text-gray-400">{description}</Text>}
     </Animated.View>
   );
 };

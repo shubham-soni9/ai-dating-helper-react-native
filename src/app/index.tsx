@@ -25,10 +25,12 @@ export default function App() {
     const iosApiKey = revenuecatApiKey;
     const androidApiKey = revenuecatApiKey;
 
-    if (Platform.OS === 'ios') {
-      Purchases.configure({ apiKey: iosApiKey });
-    } else if (Platform.OS === 'android') {
-      Purchases.configure({ apiKey: androidApiKey });
+    if (revenuecatApiKey) {
+      if (Platform.OS === 'ios') {
+        Purchases.configure({ apiKey: iosApiKey });
+      } else if (Platform.OS === 'android') {
+        Purchases.configure({ apiKey: androidApiKey });
+      }
     }
   }, []);
 
