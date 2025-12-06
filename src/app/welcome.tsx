@@ -24,8 +24,6 @@ export default function Welcome() {
 
   const videoAssetId = require('assets/intro-video.mp4');
 
-  const hello = 'hello';
-
   const player = useVideoPlayer(videoAssetId, (player) => {
     player.loop = true;
     player.play();

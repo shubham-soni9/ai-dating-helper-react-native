@@ -2,6 +2,7 @@ import RevenueCatUI, { PAYWALL_RESULT } from 'react-native-purchases-ui';
 
 export async function presentPaywall(): Promise<boolean> {
   const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
+  console.log('Paywall result:', paywallResult);
   switch (paywallResult) {
     case PAYWALL_RESULT.NOT_PRESENTED:
     case PAYWALL_RESULT.ERROR:

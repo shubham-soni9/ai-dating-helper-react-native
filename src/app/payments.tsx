@@ -17,7 +17,9 @@ export default function Payment() {
       if (ok) {
         setSubscription({ isSubscribed: true, trialActive: false });
         router.replace('/dashboard');
+        console.log('User subscribed successfully');
       } else {
+        console.log('User cancelled payment');
         router.replace('/welcome');
       }
     };
