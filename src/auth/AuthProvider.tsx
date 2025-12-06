@@ -108,12 +108,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch {}
     };
     sync();
-    const unsubscribe = Purchases.addCustomerInfoUpdateListener((info) => {
+    const listener = (info: Awaited<ReturnType<typeof Purchases.getCustomerInfo>>) => {
       const hasActive = Object.keys(info.entitlements.active).length > 0;
       setSubscription({ isSubscribed: hasActive, trialActive: false });
-    });
+    };
+    Purchases.addCustomerInfoUpdateListener(listener);
     return () => {
-      if (unsubscribe) unsubscribe();
+      Purchases.removeCustomerInfoUpdateListener(listener);
     };
   }, [initialized]);
 
