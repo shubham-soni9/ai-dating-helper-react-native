@@ -19,7 +19,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+    Purchases.setLogLevel(LOG_LEVEL.DEBUG);
     const revenuecatApiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
 
     const iosApiKey = revenuecatApiKey;
@@ -27,9 +27,9 @@ export default function App() {
 
     if (revenuecatApiKey) {
       if (Platform.OS === 'ios') {
-        Purchases.configure({ apiKey: iosApiKey });
+        Purchases.configure({ apiKey: iosApiKey, appUserID: 'shubham_soni_860' });
       } else if (Platform.OS === 'android') {
-        Purchases.configure({ apiKey: androidApiKey });
+        Purchases.configure({ apiKey: androidApiKey, appUserID: 'shubham_soni_860' });
       }
     }
   }, []);
