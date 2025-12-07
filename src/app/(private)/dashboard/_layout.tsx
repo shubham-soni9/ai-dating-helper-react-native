@@ -6,7 +6,9 @@ import { useAuth } from '@/auth/AuthProvider';
 export default function DashboardLayout() {
   const { colors } = useTheme();
   const { subscription } = useAuth();
-  const isPaid = subscription.isSubscribed || subscription.trialActive;
+  // Dummy Change
+  // const isPaid = subscription.isSubscribed || subscription.trialActive;
+  const isPaid = true;
   return (
     <Tabs
       initialRouteName="home"

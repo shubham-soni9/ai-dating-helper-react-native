@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@supabase/functions-js/": "jsr:@supabase/functions-js/",
+    "@openrouter/sdk": "npm:@openrouter/sdk@^0.2.9"
+  }
+}

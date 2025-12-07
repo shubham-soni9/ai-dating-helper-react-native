@@ -20,7 +20,8 @@ export default function Payment() {
         console.log('User subscribed successfully');
       } else {
         console.log('User cancelled payment');
-        router.replace('/welcome');
+        // Dummy Change. Jump to Error Screen or Welcome Screen
+        router.replace('/dashboard');
       }
     };
     show();

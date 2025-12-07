@@ -25,7 +25,7 @@ export default function ToolsTab() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background, padding: 16 }}>
       <View style={{ flexDirection: 'row', gap: 12 }}>
-        <Tile title="DM Girl By Screenshot" onPress={() => router.push('/tools/dm-helper')} />
+        <Tile title="DM Girl This Girl" onPress={() => router.push('/tools/dm-helper')} />
         <Tile title="Get Out of Angry Chatting" onPress={() => router.push('/tools/deescalate')} />
       </View>
       <View style={{ height: 12 }} />
