@@ -111,6 +111,9 @@ export default function DeescalateTool() {
         // Simulate API delay for demo
         await new Promise((resolve) => setTimeout(resolve, 3000));
         apiResult = {
+          situationAnalysis: 'The conversation has become tense with emotional escalation.',
+          partnerEmotions: ['frustrated', 'defensive', 'misunderstood'],
+          partnerNeeds: ['to feel heard', 'validation', 'clarification'],
           suggestions: [
             'Acknowledge their feelings without agreeing with accusations',
             'Use "I" statements to express your perspective',

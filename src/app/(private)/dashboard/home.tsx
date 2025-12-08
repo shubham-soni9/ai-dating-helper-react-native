@@ -34,8 +34,7 @@ export default function HomeTab() {
 
   const handleRecentToolPress = (tool: RecentTool) => {
     // Navigate to the tool's route
-    const toolRoute = `/${tool.key.replace('-', '/')}`;
-    router.push(toolRoute as any);
+    router.push(`/tools/${tool.key}` as any);
   };
 
   const Daily = () => (

@@ -1,14 +1,16 @@
-
 /**
  * Helper function to process and verify Base64 image strings.
  * Ensures the string is clean, properly formatted, and has the correct Data URI scheme.
- * 
+ *
  * @param base64String - The raw base64 string (with or without prefix).
  * @param mimeType - The mime type of the image (default: 'image/jpeg').
  * @returns A properly formatted Data URI string.
  * @throws Error if base64String is empty or invalid.
  */
-export const processImageForApi = (base64String: string | null | undefined, mimeType: string = 'image/jpeg'): string => {
+export const processImageForApi = (
+  base64String: string | null | undefined,
+  mimeType: string = 'image/jpeg'
+): string => {
   if (!base64String) {
     throw new Error('Image data is missing');
   }
