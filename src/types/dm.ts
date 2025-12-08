@@ -9,11 +9,7 @@ export type DMRequest = {
   image: string;
 };
 
-export type DMSuggestion = {
-  text: string;
-};
-
 export type DMResult = {
-  suggestions: DMSuggestion[];
+  dmSuggestions: string[];
   hints: string[];
 };

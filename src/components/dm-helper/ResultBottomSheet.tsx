@@ -32,20 +32,20 @@ export default function ResultBottomSheet({ visible, result, onClose }: ResultBo
     Alert.alert('Copied!', 'Text copied to clipboard');
   };
 
-  const renderSuggestionItem = ({ item, index }: { item: { text: string }; index: number }) => (
+  const renderSuggestionItem = ({ item, index }: { item: string; index: number }) => (
     <TouchableOpacity
       style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
-      onPress={() => copyToClipboard(item.text)}
+      onPress={() => copyToClipboard(item)}
       activeOpacity={0.7}>
       <View style={styles.cardHeader}>
         <View style={[styles.badge, { backgroundColor: colors.primary + '20' }]}>
           <Text style={[styles.badgeText, { color: colors.primary }]}>#{index + 1}</Text>
         </View>
-        <TouchableOpacity onPress={() => copyToClipboard(item.text)}>
+        <TouchableOpacity onPress={() => copyToClipboard(item)}>
           <Text style={[styles.copyIcon, { color: colors.mutedText }]}>📋</Text>
         </TouchableOpacity>
       </View>
-      <Text style={[styles.cardText, { color: colors.text }]}>{item.text}</Text>
+      <Text style={[styles.cardText, { color: colors.text }]}>{item}</Text>
     </TouchableOpacity>
   );
 
@@ -106,7 +106,7 @@ export default function ResultBottomSheet({ visible, result, onClose }: ResultBo
                       activeTab === 'suggestions' ? colors.primary : colors.mutedText,
                   },
                 ]}>
-                <Text style={styles.tabBadgeText}>{result.suggestions?.length || 0}</Text>
+                <Text style={styles.tabBadgeText}>{result.dmSuggestions?.length || 0}</Text>
               </View>
             </TouchableOpacity>
 
@@ -148,7 +148,7 @@ export default function ResultBottomSheet({ visible, result, onClose }: ResultBo
                   Tap any suggestion to copy it to your clipboard
                 </Text>
                 <FlatList
-                  data={result.suggestions || []}
+                  data={result.dmSuggestions || []}
                   renderItem={renderSuggestionItem}
                   keyExtractor={(_, index) => `suggestion-${index}`}
                   contentContainerStyle={styles.listContainer}
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   sheet: {
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: '85%',
+    height: '90%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.2,

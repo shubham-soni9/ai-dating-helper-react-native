@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
         },
       ],
       responseFormat: {
-        type: "json_schema",
+        type: "json_schema" as const,
         jsonSchema: {
           name: "suggestions",
           strict: true,

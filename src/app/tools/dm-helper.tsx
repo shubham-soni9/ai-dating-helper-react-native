@@ -109,10 +109,10 @@ export default function DMHelper() {
         // Simulate API delay for demo
         await new Promise((resolve) => setTimeout(resolve, 3000));
         apiResult = {
-          suggestions: [
-            { text: 'Hey, loved your recent post—what inspired it?' },
-            { text: "Your vibe is great. What's story behind that photo?" },
-            { text: 'That looks amazing! Where did you take this?' },
+          dmSuggestions: [
+            'Hey, loved your recent post—what inspired it?',
+            "Your vibe is great. What's story behind that photo?",
+            'That looks amazing! Where did you take this?',
           ],
           hints: [
             'Keep it specific to show you actually looked at their content',
