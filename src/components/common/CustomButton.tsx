@@ -32,7 +32,7 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
       style={[
         styles.button,
         { backgroundColor: colors.primary },
-        disabled && { backgroundColor: colors.surface }, // Use a darker color for disabled
+        disabled && { backgroundColor: colors.border }, // Changed from colors.surface to colors.border for better visibility
         style,
       ]}
       onPress={onPress}
