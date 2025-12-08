@@ -6,7 +6,7 @@ import {
   Modal,
   TouchableOpacity,
   Pressable,
-  FlatList,
+  ScrollView,
   Alert,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
@@ -41,91 +41,81 @@ export default function DeescalatorResultBottomSheet({
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable style={[styles.container, { backgroundColor: colors.surface }]}>
-          <View style={styles.header}>
-            <Text style={[styles.title, { color: colors.text }]}>
-              {result.error ? 'Invalid Image' : 'De-escalation Analysis'}
-            </Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={[styles.closeText, { color: colors.mutedText }]}>✕</Text>
-            </TouchableOpacity>
-          </View>
+      <Pressable style={styles.overlay} onPress={onClose} />
+      <View style={[styles.container, { backgroundColor: colors.surface }]}>
+        <View style={styles.header}>
+          <Text style={[styles.title, { color: colors.text }]}>
+            {result.error ? 'Invalid Image' : 'De-escalation Analysis'}
+          </Text>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Text style={[styles.closeText, { color: colors.mutedText }]}>✕</Text>
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.content}>
-            {result.error ? (
-              <View style={styles.errorContainer}>
-                <Text style={[styles.errorText, { color: colors.accent }]}>⚠️ {result.error}</Text>
-              </View>
-            ) : (
-              <>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                  Situation Analysis
-                </Text>
-                <Text style={[styles.analysisText, { color: colors.mutedText }]}>
-                  {result.situationAnalysis}
-                </Text>
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={true}
+          nestedScrollEnabled={true}>
+          {result.error ? (
+            <View style={styles.errorContainer}>
+              <Text style={[styles.errorText, { color: colors.accent }]}>⚠️ {result.error}</Text>
+            </View>
+          ) : (
+            <>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Situation Analysis</Text>
+              <Text style={[styles.analysisText, { color: colors.mutedText }]}>
+                {result.situationAnalysis}
+              </Text>
 
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                  What Your Partner is Feeling
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                What Your Partner is Feeling
+              </Text>
+              {result.partnerEmotions.map((emotion: string, index: number) => (
+                <Text key={index} style={[styles.emotionText, { color: colors.text }]}>
+                  • {emotion}
                 </Text>
-                <FlatList
-                  data={result.partnerEmotions}
-                  keyExtractor={(_, index) => index.toString()}
-                  renderItem={({ item }) => (
-                    <Text style={[styles.emotionText, { color: colors.text }]}>• {item}</Text>
-                  )}
-                />
+              ))}
 
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                  What Your Partner Needs
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                What Your Partner Needs
+              </Text>
+              {result.partnerNeeds.map((need: string, index: number) => (
+                <Text key={index} style={[styles.needText, { color: colors.text }]}>
+                  • {need}
                 </Text>
-                <FlatList
-                  data={result.partnerNeeds}
-                  keyExtractor={(_, index) => index.toString()}
-                  renderItem={({ item }) => (
-                    <Text style={[styles.needText, { color: colors.text }]}>• {item}</Text>
-                  )}
-                />
+              ))}
 
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Approach Strategy</Text>
-                <Text style={[styles.approachText, { color: colors.mutedText }]}>
-                  {result.approach}
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Approach Strategy</Text>
+              <Text style={[styles.approachText, { color: colors.mutedText }]}>
+                {result.approach}
+              </Text>
+
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Message Suggestions</Text>
+              {result.suggestions.map((suggestion: string, index: number) => (
+                <View key={index} style={styles.suggestionContainer}>
+                  <Text style={[styles.suggestionText, { color: colors.text }]}>
+                    • {suggestion}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => copyToClipboard(suggestion, index)}
+                    style={styles.copyButton}>
+                    <Text style={[styles.copyText, { color: colors.primary }]}>
+                      {copiedIndex === index ? '✓ Copied!' : 'Copy'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Next Steps</Text>
+              {result.nextSteps.map((step: string, index: number) => (
+                <Text key={index} style={[styles.nextStepText, { color: colors.mutedText }]}>
+                  • {step}
                 </Text>
-
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                  Message Suggestions
-                </Text>
-                <FlatList
-                  data={result.suggestions}
-                  keyExtractor={(_, index) => index.toString()}
-                  renderItem={({ item, index }) => (
-                    <View style={styles.suggestionContainer}>
-                      <Text style={[styles.suggestionText, { color: colors.text }]}>• {item}</Text>
-                      <TouchableOpacity
-                        onPress={() => copyToClipboard(item, index)}
-                        style={styles.copyButton}>
-                        <Text style={[styles.copyText, { color: colors.primary }]}>
-                          {copiedIndex === index ? '✓ Copied!' : 'Copy'}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                />
-
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Next Steps</Text>
-                <FlatList
-                  data={result.nextSteps}
-                  keyExtractor={(_, index) => index.toString()}
-                  renderItem={({ item }) => (
-                    <Text style={[styles.nextStepText, { color: colors.mutedText }]}>• {item}</Text>
-                  )}
-                />
-              </>
-            )}
-          </View>
-        </Pressable>
-      </Pressable>
+              ))}
+            </>
+          )}
+        </ScrollView>
+      </View>
     </Modal>
   );
 }
@@ -134,9 +124,12 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
   },
   container: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '80%',
