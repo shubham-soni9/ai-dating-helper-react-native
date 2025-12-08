@@ -160,7 +160,7 @@ export default function DMHelper() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
-      <Stack.Screen options={{ headerShown: true, title: 'DM Helper', headerBackTitle: '' }} />
+      <Stack.Screen options={{ headerShown: true, title: '', headerBackTitle: 'DM Helper' }} />
 
       <ScrollView
         style={styles.scrollView}
