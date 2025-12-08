@@ -1,64 +1,94 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, Image, FlatList } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
-import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
-import Button from '@/components/Button';
-import { DMParams, DMRequest, DMResult } from '@/types/dm';
-import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '@/auth/AuthProvider';
+import * as SecureStore from 'expo-secure-store';
+import { DMParams, DMRequest, DMResult } from '@/types/dm';
 import { API_GET_DM_BY_IMAGE } from '@/constants/apiConstants';
+import ScreenHeader from './components/ScreenHeader';
+import ImagePickerSection from './components/ImagePickerSection';
+import ParameterSelector from './components/ParameterSelector';
+import ExtraNotesSection from './components/ExtraNotesSection';
+import GenerateButton from './components/GenerateButton';
+import ProgressOverlay from './components/ProgressOverlay';
+import ResultBottomSheet from './components/ResultBottomSheet';
 
-type Picked = { uri: string; base64?: string | null };
+type PickedImage = { uri: string; base64?: string | null };
+
+const CATEGORIES = [
+  { label: 'Casual', value: 'casual' },
+  { label: 'Romantic', value: 'romantic' },
+  { label: 'Professional', value: 'professional' },
+  { label: 'Friendly', value: 'friendly' },
+  { label: 'Playful', value: 'playful' },
+];
+
+const TONES = [
+  { label: 'Warm', value: 'warm' },
+  { label: 'Confident', value: 'confident' },
+  { label: 'Thoughtful', value: 'thoughtful' },
+  { label: 'Fun', value: 'fun' },
+  { label: 'Direct', value: 'direct' },
+];
+
+const INTENTIONS = [
+  { label: 'Start Conversation', value: 'start_conversation' },
+  { label: 'Show Interest', value: 'show_interest' },
+  { label: 'Ask Question', value: 'ask_question' },
+  { label: 'Give Compliment', value: 'give_compliment' },
+  { label: 'Make Plans', value: 'make_plans' },
+];
 
 export default function DMHelper() {
   const { colors } = useTheme();
-  const router = useRouter();
   const { session } = useAuth();
-  const [images, setImages] = useState<Picked[]>([]);
-  const [params, setParams] = useState<DMParams>({ category: '', tone: '', intention: '' });
-  const [prompt, setPrompt] = useState('');
-
-  const pickImages = async () => {
-    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!perm.granted) {
-      Alert.alert('Permission required', 'Please allow media library access.');
-      return;
-    }
-    const res = await ImagePicker.launchImageLibraryAsync({
-      allowsMultipleSelection: false,
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.5,
-      base64: true,
-    });
-    if (!res.canceled) {
-      setImages(res.assets.map((a) => ({ uri: a.uri, base64: a.base64 })));
-    }
-  };
+  const [image, setImage] = useState<PickedImage | null>(null);
+  const [params, setParams] = useState<DMParams>({
+    category: 'casual',
+    tone: 'warm',
+    intention: 'start_conversation',
+  });
+  const [extraNotes, setExtraNotes] = useState('');
+  const [showExtraNotes, setShowExtraNotes] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [result, setResult] = useState<DMResult | null>(null);
+  const [showResult, setShowResult] = useState(false);
 
   const buildPrompt = () => {
+    const selectedCat = CATEGORIES.find((c) => c.value === params.category);
+    const selectedTone = TONES.find((t) => t.value === params.tone);
+    const selectedInt = INTENTIONS.find((i) => i.value === params.intention);
+
     const parts = [
-      `Category: ${params.category}`,
-      `Tone: ${params.tone}`,
-      `Intention: ${params.intention}`,
-      `Notes: ${prompt}`,
+      `Category: ${selectedCat?.label || params.category}`,
+      `Tone: ${selectedTone?.label || params.tone}`,
+      `Intention: ${selectedInt?.label || params.intention}`,
     ];
+    
+    if (extraNotes.trim()) {
+      parts.push(`Additional Notes: ${extraNotes}`);
+    }
+    
     return parts.join('\n');
   };
 
-  const onSubmit = async () => {
-    try {
-      if (images.length === 0 || !images[0].base64) {
-        Alert.alert('Error', 'Please pick an image first.');
-        return;
-      }
+  const handleGenerate = async () => {
+    if (!image || !image.base64) {
+      Alert.alert('Image Required', 'Please select an image first.');
+      return;
+    }
 
+    setIsGenerating(true);
+
+    try {
       const api = API_GET_DM_BY_IMAGE;
       const body: DMRequest = {
         prompt: buildPrompt(),
-        image: images[0].base64,
+        image: image.base64,
       };
-      let result: DMResult;
+
+      let apiResult: DMResult;
+      
       if (api) {
         const res = await fetch(api, {
           method: 'POST',
@@ -68,112 +98,114 @@ export default function DMHelper() {
           },
           body: JSON.stringify(body),
         });
-        result = (await res.json()) as DMResult;
+
+        if (!res.ok) {
+          throw new Error('API request failed');
+        }
+
+        apiResult = (await res.json()) as DMResult;
       } else {
-        result = {
+        // Simulate API delay for demo
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        apiResult = {
           suggestions: [
             { text: 'Hey, loved your recent post—what inspired it?' },
-            { text: 'Your vibe is great. What’s the story behind that photo?' },
+            { text: 'Your vibe is great. What's the story behind that photo?' },
+            { text: 'That looks amazing! Where did you take this?' },
           ],
-          hints: ['Keep it specific', 'Invite a reply without pressure'],
+          hints: [
+            'Keep it specific to show you actually looked at their content',
+            'Invite a reply without pressure',
+            'Be genuine and show your personality',
+          ],
         };
       }
+
+      // Save to recent tools
       const prev = await SecureStore.getItemAsync('recent_tools');
       const next = [
         { key: 'dm-helper', title: 'DM Girl By Screenshot' },
         ...((prev ? JSON.parse(prev) : []) as { key: string; title: string }[]),
       ].slice(0, 6);
       await SecureStore.setItemAsync('recent_tools', JSON.stringify(next));
+
+      // Save to history
       const histPrev = await SecureStore.getItemAsync('recent_history');
       const histNext = [
         {
           id: String(Date.now()),
           title: body.prompt.slice(0, 40) + '…',
           tool: 'DM Helper',
-          thumbnailUrl: images[0]?.uri,
+          thumbnailUrl: image.uri,
           createdAt: Date.now(),
         },
         ...((histPrev ? JSON.parse(histPrev) : []) as any[]),
       ].slice(0, 20);
       await SecureStore.setItemAsync('recent_history', JSON.stringify(histNext));
-      router.push({ pathname: '/tools/dm-result', params: { data: JSON.stringify(result) } });
-    } catch {
-      Alert.alert('Error', 'Failed to generate suggestions.');
+
+      setResult(apiResult);
+      setIsGenerating(false);
+      setShowResult(true);
+    } catch (error) {
+      setIsGenerating(false);
+      Alert.alert('Error', 'Failed to generate suggestions. Please try again.');
     }
   };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.text }]}>DM Helper</Text>
-      <View style={{ flexDirection: 'row', gap: 8 }}>
-        <TextInput
-          value={params.category}
-          onChangeText={(t) => setParams((p) => ({ ...p, category: t }))}
-          placeholder="Category"
-          placeholderTextColor={colors.mutedText}
-          style={[
-            styles.input,
-            { borderColor: colors.border, color: colors.text, backgroundColor: colors.surface },
-          ]}
+      <ScreenHeader />
+      
+      <ScrollView 
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        <ImagePickerSection image={image} onImagePicked={setImage} />
+        
+        <ParameterSelector
+          params={params}
+          onParamsChange={setParams}
+          categories={CATEGORIES}
+          tones={TONES}
+          intentions={INTENTIONS}
         />
-        <TextInput
-          value={params.tone}
-          onChangeText={(t) => setParams((p) => ({ ...p, tone: t }))}
-          placeholder="Tone"
-          placeholderTextColor={colors.mutedText}
-          style={[
-            styles.input,
-            { borderColor: colors.border, color: colors.text, backgroundColor: colors.surface },
-          ]}
+        
+        <ExtraNotesSection
+          visible={showExtraNotes}
+          notes={extraNotes}
+          onNotesChange={setExtraNotes}
+          onToggle={() => setShowExtraNotes(!showExtraNotes)}
         />
-        <TextInput
-          value={params.intention}
-          onChangeText={(t) => setParams((p) => ({ ...p, intention: t }))}
-          placeholder="Intention"
-          placeholderTextColor={colors.mutedText}
-          style={[
-            styles.input,
-            { borderColor: colors.border, color: colors.text, backgroundColor: colors.surface },
-          ]}
-        />
-      </View>
-      <View style={{ height: 12 }} />
-      <Button title="Pick Screenshot" onPress={pickImages} />
-      <FlatList
-        horizontal
-        data={images}
-        keyExtractor={(i, idx) => i.uri + idx}
-        contentContainerStyle={{ paddingVertical: 12, gap: 8 }}
-        renderItem={({ item }) => (
-          <Image source={{ uri: item.uri }} style={{ width: 80, height: 120, borderRadius: 8 }} />
-        )}
+        
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
+
+      <GenerateButton onPress={handleGenerate} disabled={!image} />
+
+      <ProgressOverlay visible={isGenerating} />
+
+      <ResultBottomSheet
+        visible={showResult}
+        result={result}
+        onClose={() => setShowResult(false)}
       />
-      <TextInput
-        value={prompt}
-        onChangeText={setPrompt}
-        placeholder="Notes to personalize"
-        placeholderTextColor={colors.mutedText}
-        style={[
-          styles.notes,
-          { borderColor: colors.border, color: colors.text, backgroundColor: colors.surface },
-        ]}
-        multiline
-      />
-      <View style={{ height: 12 }} />
-      <Button title="Generate" onPress={onSubmit} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 22, fontWeight: '700', marginBottom: 12 },
-  input: { flex: 1, borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8 },
-  notes: {
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    minHeight: 100,
+  container: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: 100,
+  },
+  bottomSpacer: {
+    height: 20,
   },
 });
