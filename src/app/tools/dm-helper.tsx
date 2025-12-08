@@ -4,7 +4,6 @@ import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/auth/AuthProvider';
-import * as SecureStore from 'expo-secure-store';
 import { DMParams, DMRequest, DMResult } from '@/types/dm';
 import { API_GET_DM_BY_IMAGE } from '@/constants/apiConstants';
 import { processImageForApi } from '@/utils/imageHelper';
@@ -128,28 +127,6 @@ export default function DMHelper() {
       }
 
       console.log('API Result:', JSON.stringify(apiResult, null, 2));
-
-      // Save to recent tools
-      const prev = await SecureStore.getItemAsync('recent_tools');
-      const next = [
-        { key: 'dm-helper', title: 'DM Girl By Screenshot' },
-        ...((prev ? JSON.parse(prev) : []) as { key: string; title: string }[]),
-      ].slice(0, 6);
-      await SecureStore.setItemAsync('recent_tools', JSON.stringify(next));
-
-      // Save to history
-      const histPrev = await SecureStore.getItemAsync('recent_history');
-      const histNext = [
-        {
-          id: String(Date.now()),
-          title: body.prompt.slice(0, 40) + '…',
-          tool: 'DM Helper',
-          thumbnailUrl: image.uri,
-          createdAt: Date.now(),
-        },
-        ...((histPrev ? JSON.parse(histPrev) : []) as any[]),
-      ].slice(0, 20);
-      await SecureStore.setItemAsync('recent_history', JSON.stringify(histNext));
 
       setResult(apiResult);
       setIsGenerating(false);
