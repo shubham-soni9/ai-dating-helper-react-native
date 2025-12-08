@@ -65,16 +65,18 @@ export const VerifyStep: React.FC<VerifyStepProps> = ({
         label="Verification code"
         value={code}
         onChangeText={(text) => {
-          setCode(text.replace(/[^a-zA-Z0-9]/g, '').toUpperCase());
+          setCode(text.replace(/[^0-9]/g, ''));
           onErrorClear();
         }}
         placeholder="Enter code"
         maxLength={8}
-        autoCapitalize="characters"
+        keyboardType="number-pad"
         error={error}
       />
 
-      <Text style={[styles.sentText, { color: colors.primary }]}>We have sent a code to your inbox</Text>
+      <Text style={[styles.sentText, { color: colors.primary }]}>
+        We have sent a code to your inbox
+      </Text>
 
       <View style={styles.spacer} />
 

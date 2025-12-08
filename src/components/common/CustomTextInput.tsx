@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  TextInput,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInputProps,
-} from 'react-native';
+import { TextInput, View, Text, StyleSheet, TouchableOpacity, TextInputProps } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -48,7 +41,7 @@ export const CustomTextInput: React.FC<CustomTextInputProps> = ({
         style={[
           styles.inputContainer,
           {
-            backgroundColor: colors.surface,
+            backgroundColor: '#27272a', // Slightly lighter than background #191919 or #0f172a
             borderColor: colors.border,
           },
           isFocused && { borderColor: colors.primary },
