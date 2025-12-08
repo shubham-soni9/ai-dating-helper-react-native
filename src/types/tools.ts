@@ -1,6 +1,11 @@
+import { Ionicons } from '@expo/vector-icons';
+
 export type Tool = {
-  key: string;
+  id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  route: string;
+  isReady: boolean;
+  color?: string;
 };
