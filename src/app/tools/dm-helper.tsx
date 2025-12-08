@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Stack } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
@@ -121,6 +123,8 @@ export default function DMHelper() {
         };
       }
 
+      console.log('API Result:', JSON.stringify(apiResult, null, 2));
+
       // Save to recent tools
       const prev = await SecureStore.getItemAsync('recent_tools');
       const next = [
@@ -147,13 +151,17 @@ export default function DMHelper() {
       setIsGenerating(false);
       setShowResult(true);
     } catch (error) {
+      console.error('Generation Error:', error);
       setIsGenerating(false);
       Alert.alert('Error', 'Failed to generate suggestions. Please try again.');
     }
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      edges={['bottom', 'left', 'right']}>
+      <Stack.Screen options={{ headerShown: true, title: 'DM Helper' }} />
       <ScreenHeader />
 
       <ScrollView
@@ -189,7 +197,7 @@ export default function DMHelper() {
         result={result}
         onClose={() => setShowResult(false)}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
