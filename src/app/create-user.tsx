@@ -7,12 +7,14 @@ import EmailIcon from 'assets/email-icon.svg';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
+import { useTheme } from '@/theme/ThemeProvider';
 
 export default function CreateUser() {
   const [imageHeight, setImageHeight] = useState(300); // fallback
   const asset = require('assets/communication.jpg');
   const router = useRouter();
   const { session, subscription, initialized } = useAuth();
+  const { colors } = useTheme();
   const [onboardingSeen, setOnboardingSeen] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export default function CreateUser() {
 
   return (
     <SafeAreaView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       onLayout={(event) => {
         const { height } = event.nativeEvent.layout;
         setImageHeight(height * 0.4);
@@ -53,30 +55,35 @@ export default function CreateUser() {
       <ScrollView contentContainerStyle={styles.scrollStyle}>
         <Image source={asset} style={[styles.image, { height: imageHeight }]} resizeMode="cover" />
 
-        <Text style={styles.title}>Become a Pro</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Become a Pro</Text>
 
-        <Text style={styles.subtitle}>
-          Join <Text className="text-xl font-bold">10000+</Text> happy users and become better
-          communication partner.
+        <Text style={[styles.subtitle, { color: colors.text }]}>
+          Join{' '}
+          <Text className="text-xl font-bold" style={{ color: colors.text }}>
+            10000+
+          </Text>{' '}
+          happy users and become better communication partner.
         </Text>
 
         <Button
-          style={styles.googleButton}
+          style={[styles.googleButton, { borderColor: colors.border }]}
           labelStyle={{ fontSize: 19, fontWeight: '700' }}
           contentStyle={{ paddingVertical: 8 }}
           mode="outlined"
           onPress={() => {}}
+          textColor={colors.text}
           icon={() => <GoogleIcon width={24} height={24} />}>
           Continue with Google
         </Button>
 
         <Button
-          style={styles.emailButton}
+          style={[styles.emailButton, { borderColor: colors.border }]}
           labelStyle={{ fontSize: 19, fontWeight: '700' }}
           contentStyle={{ paddingVertical: 8, alignItems: 'center' }}
           mode="outlined"
           onPress={handleEmailLogin}
-          icon={() => <EmailIcon width={30} height={30} />}>
+          textColor={colors.text}
+          icon={() => <EmailIcon width={30} height={30} fill={colors.text} />}>
           Continue with Email
         </Button>
 
