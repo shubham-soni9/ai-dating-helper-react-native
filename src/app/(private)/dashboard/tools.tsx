@@ -1,4 +1,4 @@
-import { View, Text, Pressable, TextInput, SectionList, StyleSheet } from 'react-native';
+import { View, Text, Pressable, TextInput, FlatList, StyleSheet } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,26 +23,17 @@ export default function ToolsTab() {
     [searchQuery]
   );
 
-  const sections = useMemo(() => {
+  const toolsData = useMemo(() => {
     if (searchQuery) {
-      return [{ title: 'Search Results', data: filteredTools }];
+      return filteredTools;
     }
 
+    // Sort tools: Critical first, then ready tools, then upcoming tools
     const criticalTools = filteredTools.filter((tool) => tool.badge === 'Critical');
     const readyTools = filteredTools.filter((tool) => tool.isReady && !tool.badge);
     const upcomingTools = filteredTools.filter((tool) => !tool.isReady && !tool.badge);
 
-    const result = [];
-    if (criticalTools.length > 0) {
-      result.push({ title: 'Critical Safety Tools', data: criticalTools });
-    }
-    if (readyTools.length > 0) {
-      result.push({ title: 'Available Now', data: readyTools });
-    }
-    if (upcomingTools.length > 0) {
-      result.push({ title: 'Coming Soon', data: upcomingTools });
-    }
-    return result;
+    return [...criticalTools, ...readyTools, ...upcomingTools];
   }, [filteredTools, searchQuery]);
 
   const renderItem = ({ item }: { item: Tool }) => (
@@ -53,8 +44,8 @@ export default function ToolsTab() {
         styles.card,
         {
           backgroundColor: colors.surface,
-          borderColor: item.badge === 'Critical' ? item.color + '40' : colors.border,
-          borderWidth: item.badge === 'Critical' ? 1.5 : 1,
+          borderColor: colors.border,
+          borderWidth: 1,
           opacity: !item.isReady ? 0.7 : pressed ? 0.95 : 1,
           transform: [{ scale: pressed && item.isReady ? 0.98 : 1 }],
           flexDirection: 'row',
@@ -71,40 +62,20 @@ export default function ToolsTab() {
         />
       )}
 
-      <View style={[styles.iconContainer, { backgroundColor: item.color + '20', marginRight: 12 }]}>
-        <Ionicons name={item.icon} size={20} color={item.color || colors.primary} />
-      </View>
-
       <View style={{ flex: 1 }}>
-        <View
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text
-            style={[styles.title, { color: colors.text, fontSize: 14, flex: 1 }]}
-            numberOfLines={1}>
-            {item.title}
-          </Text>
-
-          {item.badge === 'Critical' && (
-            <View
-              style={[
-                styles.badge,
-                {
-                  backgroundColor: item.color,
-                  position: 'absolute',
-                  right: 0,
-                  top: -4,
-                  paddingHorizontal: 6,
-                  paddingVertical: 2,
-                  borderRadius: 8,
-                },
-              ]}>
-              <Text style={[styles.badgeText, { fontSize: 9 }]}>{item.badge}</Text>
-            </View>
-          )}
-
-          {!item.isReady && !item.badge && (
-            <Text style={{ color: colors.mutedText, fontSize: 11, marginLeft: 8 }}>Soon</Text>
-          )}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View
+            style={[styles.iconContainer, { backgroundColor: item.color + '20', marginRight: 10 }]}>
+            <Ionicons name={item.icon} size={24} color={item.color || colors.primary} />
+          </View>
+          <View
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text
+              style={[styles.title, { color: colors.text, fontSize: 16, flex: 1 }]}
+              numberOfLines={1}>
+              {item.title}
+            </Text>
+          </View>
         </View>
 
         <Text
@@ -116,29 +87,10 @@ export default function ToolsTab() {
     </Pressable>
   );
 
-  const renderSectionHeader = ({ section }: { section: { title: string } }) => (
-    <View style={styles.sectionHeader}>
-      <Text style={[styles.sectionTitle, { color: colors.text }]}>{section.title}</Text>
-      {section.title === 'Critical Safety Tools' && (
-        <View style={[styles.sectionBadge, { backgroundColor: '#ef444420' }]}>
-          <Ionicons name="shield-checkmark" size={14} color="#ef4444" />
-          <Text style={[styles.sectionBadgeText, { color: '#ef4444' }]}>High Priority</Text>
-        </View>
-      )}
-    </View>
-  );
-
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['top']}>
-      <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Dating Tools</Text>
-        <Text style={[styles.headerSubtitle, { color: colors.mutedText }]}>
-          AI-powered tools to navigate modern dating with confidence
-        </Text>
-      </View>
-
       <View
         style={[
           styles.searchContainer,
@@ -159,16 +111,13 @@ export default function ToolsTab() {
         )}
       </View>
 
-      <SectionList
-        sections={sections}
+      <FlatList
+        data={toolsData}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        renderSectionHeader={renderSectionHeader}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        SectionSeparatorComponent={() => <View style={{ height: 20 }} />}
-        stickySectionHeadersEnabled={false}
+        ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <View style={[styles.emptyIconContainer, { backgroundColor: colors.surface }]}>
@@ -190,21 +139,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
-  header: {
-    marginTop: 20,
-    marginBottom: 24,
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: '800',
-    marginBottom: 6,
-    letterSpacing: -0.5,
-  },
-  headerSubtitle: {
-    fontSize: 15,
-    lineHeight: 22,
-    opacity: 0.8,
-  },
+
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -212,6 +147,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 14,
     borderWidth: 1,
+    marginTop: 20,
     marginBottom: 24,
   },
   searchIcon: {
@@ -225,32 +161,7 @@ const styles = StyleSheet.create({
   listContent: {
     paddingBottom: 32,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-    paddingHorizontal: 2,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: -0.3,
-  },
-  sectionBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    gap: 4,
-  },
-  sectionBadgeText: {
-    fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
+
   card: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -266,8 +177,8 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   iconContainer: {
-    width: 52,
-    height: 52,
+    width: 40,
+    height: 40,
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
@@ -286,7 +197,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   title: {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '700',
     letterSpacing: -0.2,
     flex: 1,
