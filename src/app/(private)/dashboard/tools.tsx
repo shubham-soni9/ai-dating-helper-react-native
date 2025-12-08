@@ -7,11 +7,45 @@ import { useState, useMemo } from 'react';
 import { Tool } from '@/types/tools';
 import { TOOLS } from '@/data/tools';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as SecureStore from 'expo-secure-store';
 
 export default function ToolsTab() {
   const { colors } = useTheme();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+
+  const trackToolUsage = async (tool: Tool) => {
+    try {
+      const existingData = await SecureStore.getItemAsync('recent_tools');
+      const recentTools = existingData ? JSON.parse(existingData) : [];
+
+      // Remove if already exists to avoid duplicates
+      const filteredTools = recentTools.filter((item: any) => item.key !== tool.id);
+
+      // Add new tool at the beginning with timestamp
+      const newTool = {
+        key: tool.id,
+        title: tool.title,
+        icon: tool.icon,
+        color: tool.color,
+        timestamp: Date.now(),
+      };
+
+      // Keep only last 10 tools
+      const updatedTools = [newTool, ...filteredTools].slice(0, 10);
+
+      await SecureStore.setItemAsync('recent_tools', JSON.stringify(updatedTools));
+    } catch (error) {
+      console.error('Error tracking tool usage:', error);
+    }
+  };
+
+  const handleToolPress = async (tool: Tool) => {
+    if (tool.isReady) {
+      await trackToolUsage(tool);
+      router.push(tool.route as any);
+    }
+  };
 
   const filteredTools = useMemo(
     () =>
@@ -38,7 +72,7 @@ export default function ToolsTab() {
 
   const renderItem = ({ item }: { item: Tool }) => (
     <Pressable
-      onPress={() => item.isReady && router.push(item.route as any)}
+      onPress={() => handleToolPress(item)}
       disabled={!item.isReady}
       style={({ pressed }) => [
         styles.card,
