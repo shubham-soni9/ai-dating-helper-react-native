@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Stack } from 'expo-router';
-import { authColors } from '../theme/authColors';
 import { FooterLinks } from '../components/common/FooterLinks';
 import { validateEmail } from '../utils/validation';
 import { authService } from '../services/authService';
@@ -18,6 +17,7 @@ import { EmailStep } from '../components/auth/EmailStep';
 import { VerifyStep } from '../components/auth/VerifyStep';
 import { useAuth } from '../auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
+import { useTheme } from '@/theme/ThemeProvider';
 
 type AuthStep = 'email' | 'verify';
 
@@ -28,6 +28,7 @@ export default function SignIn() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { session, subscription, initialized } = useAuth();
+  const { colors } = useTheme();
   const [onboardingSeen, setOnboardingSeen] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
@@ -111,7 +112,7 @@ export default function SignIn() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen options={{ headerShown: false }} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -144,10 +145,10 @@ export default function SignIn() {
               />
             )}
 
-            <Text style={styles.termsText}>
+            <Text style={[styles.termsText, { color: colors.mutedText }]}>
               By continuing, you acknowledge that you understand and agree to the{' '}
               <Text
-                style={styles.link}
+                style={[styles.link, { color: colors.mutedText }]}
                 onPress={() =>
                   openLegal('https://neon.com/terms-of-service', 'Terms & Conditions')
                 }>
@@ -155,7 +156,7 @@ export default function SignIn() {
               </Text>{' '}
               and{' '}
               <Text
-                style={styles.link}
+                style={[styles.link, { color: colors.mutedText }]}
                 onPress={() => openLegal('https://neon.com/privacy-policy', 'Privacy Policy')}>
                 Privacy Policy
               </Text>
@@ -178,7 +179,6 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: authColors.background,
   },
   keyboardView: {
     flex: 1,
@@ -192,7 +192,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   termsText: {
-    color: authColors.secondaryText,
     fontSize: 13,
     textAlign: 'center',
     marginTop: 24,
@@ -200,6 +199,5 @@ const styles = StyleSheet.create({
   },
   link: {
     textDecorationLine: 'underline',
-    color: authColors.secondaryText,
   },
 });

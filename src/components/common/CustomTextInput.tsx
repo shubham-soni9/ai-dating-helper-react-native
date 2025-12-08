@@ -6,10 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInputProps,
-  Keyboard,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { authColors } from '../../theme/authColors';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface CustomTextInputProps extends TextInputProps {
   label?: string;
@@ -30,6 +29,7 @@ export const CustomTextInput: React.FC<CustomTextInputProps> = ({
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
+  const { colors } = useTheme();
 
   const handleFocus = (e: any) => {
     setIsFocused(true);
@@ -43,16 +43,20 @@ export const CustomTextInput: React.FC<CustomTextInputProps> = ({
 
   return (
     <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={[styles.label, { color: colors.mutedText }]}>{label}</Text>}
       <View
         style={[
           styles.inputContainer,
-          isFocused && styles.inputContainerFocused,
-          !!error && styles.inputContainerError,
+          {
+            backgroundColor: colors.surface,
+            borderColor: colors.border,
+          },
+          isFocused && { borderColor: colors.primary },
+          !!error && { borderColor: colors.accent }, // Using accent for error temporarily or define error color in theme
         ]}>
         <TextInput
-          style={[styles.input, style]}
-          placeholderTextColor={authColors.secondaryText}
+          style={[styles.input, { color: colors.text }, style]}
+          placeholderTextColor={colors.mutedText}
           value={value}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -60,11 +64,11 @@ export const CustomTextInput: React.FC<CustomTextInputProps> = ({
         />
         {showClearButton && value ? (
           <TouchableOpacity onPress={onClear} style={styles.clearButton}>
-            <Ionicons name="close-circle" size={20} color={authColors.secondaryText} />
+            <Ionicons name="close-circle" size={20} color={colors.mutedText} />
           </TouchableOpacity>
         ) : null}
       </View>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <Text style={[styles.errorText, { color: 'red' }]}>{error}</Text> : null}
     </View>
   );
 };
@@ -75,37 +79,24 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
-    color: authColors.secondaryText,
     fontSize: 14,
     marginBottom: 8,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: authColors.inputBackground,
     borderWidth: 1,
-    borderColor: authColors.inputBorder,
     borderRadius: 8,
     paddingHorizontal: 12,
     height: 50,
   },
-  inputContainerFocused: {
-    borderColor: authColors.inputBorderFocused,
-  },
-  inputContainerError: {
-    borderColor: authColors.error,
-  },
   input: {
     flex: 1,
-    color: authColors.text,
-    fontSize: 16,
-    height: '100%',
   },
   clearButton: {
     padding: 4,
   },
   errorText: {
-    color: authColors.error,
     fontSize: 12,
     marginTop: 4,
   },

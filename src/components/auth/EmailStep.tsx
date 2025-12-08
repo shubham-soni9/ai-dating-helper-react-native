@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { authColors } from '../../theme/authColors';
 import { CustomTextInput } from '../common/CustomTextInput';
 import { CustomButton } from '../common/CustomButton';
 import { validateEmail } from '../../utils/validation';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface EmailStepProps {
   email: string;
@@ -23,6 +23,7 @@ export const EmailStep: React.FC<EmailStepProps> = ({
   onErrorClear,
 }) => {
   const isValid = validateEmail(email);
+  const { colors } = useTheme();
 
   return (
     <View style={styles.content}>
@@ -52,7 +53,7 @@ export const EmailStep: React.FC<EmailStepProps> = ({
         error={error}
       />
 
-      <Text style={styles.helperText}>
+      <Text style={[styles.helperText, { color: colors.mutedText }]}>
         Use an organisation email to easily collaborate with teammates
       </Text>
 
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
   },
   helperText: {
-    color: authColors.secondaryText,
     fontSize: 14,
     marginTop: -8,
     marginBottom: 24,

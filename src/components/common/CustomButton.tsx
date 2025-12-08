@@ -7,7 +7,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
-import { authColors } from '../../theme/authColors';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface CustomButtonProps {
   title: string;
@@ -26,16 +26,30 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
   style,
   textStyle,
 }) => {
+  const { colors } = useTheme();
   return (
     <TouchableOpacity
-      style={[styles.button, disabled && styles.disabledButton, style]}
+      style={[
+        styles.button,
+        { backgroundColor: colors.primary },
+        disabled && { backgroundColor: colors.surface }, // Use a darker color for disabled
+        style,
+      ]}
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.8}>
       {loading ? (
-        <ActivityIndicator color="#ffffff" />
+        <ActivityIndicator color={colors.onPrimary} />
       ) : (
-        <Text style={[styles.text, disabled && styles.disabledText, textStyle]}>{title}</Text>
+        <Text
+          style={[
+            styles.text,
+            { color: colors.onPrimary },
+            disabled && { color: colors.mutedText },
+            textStyle,
+          ]}>
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );
@@ -43,22 +57,14 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: authColors.button,
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
   },
-  disabledButton: {
-    backgroundColor: authColors.buttonDisabled,
-  },
   text: {
-    color: authColors.buttonText,
     fontSize: 16,
     fontWeight: '600',
-  },
-  disabledText: {
-    color: '#a0a0a0', // Dimmer text for disabled state
   },
 });
