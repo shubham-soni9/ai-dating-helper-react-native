@@ -15,6 +15,9 @@ type ThemeColors = {
   onAccent: string;
   overlay: string;
   tabInactive: string;
+  error: string;
+  warning: string;
+  success: string;
 };
 
 const lightColors: ThemeColors = {
@@ -29,6 +32,9 @@ const lightColors: ThemeColors = {
   onAccent: '#ffffff',
   overlay: 'rgba(0,0,0,0.6)',
   tabInactive: '#6b7280',
+  error: '#F44336',
+  warning: '#FF9800',
+  success: '#4CAF50',
 };
 
 const darkColors: ThemeColors = {
@@ -43,6 +49,9 @@ const darkColors: ThemeColors = {
   onAccent: '#111827',
   overlay: 'rgba(255,255,255,0.4)',
   tabInactive: '#9ca3af',
+  error: '#F44336',
+  warning: '#FF9800',
+  success: '#4CAF50',
 };
 
 type ThemeContextValue = {

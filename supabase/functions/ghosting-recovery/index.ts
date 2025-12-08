@@ -67,44 +67,53 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Enhanced prompt for tone analysis
-    const enhancedPrompt = `You are an AI relationship communication expert. Analyze the provided chat screenshots and provide a comprehensive tone analysis.
+    // Enhanced prompt for ghosting recovery analysis
+    const enhancedPrompt = `You are an AI relationship communication expert specializing in ghosting detection and recovery strategies. Analyze the provided chat screenshots and provide ghosting analysis.
 
 FIRST - VALIDATE: Check if these are actually chat screenshots. If they are NOT chat screenshots (like random photos, landscapes, objects, etc.), respond with:
 {
-  "overallTone": "",
-  "userTone": "",
-  "otherPersonTone": "",
-  "toxicityLevel": "",
-  "emotionalSignals": [],
-  "conversationHealth": "",
+  "isGhosted": false,
+  "ghostingStage": "",
+  "ghostingProbability": 0,
+  "recommendedMessage": [],
+  "recommendedTone": "",
+  "recoveryChance": 0,
+  "moveOnAdvice": null,
   "confidenceScore": 0,
-  "toolType": "tone-analyzer",
+  "toolType": "ghosting-recovery",
   "error": "Invalid image. Please upload clear chat screenshots only."
 }
 
 IF THEY ARE CHAT SCREENSHOTS, analyze them and provide:
 
-ANALYSIS INTENT: ${analysisIntent || 'General tone analysis'}
-PERSPECTIVE: ${perspective || 'Both sides'}
+ANALYSIS INTENT: ${analysisIntent || "Detect if I'm being ghosted"}
+PERSPECTIVE: ${perspective || 'The other person'}
 
 USER CONTEXT: ${prompt}
 
-Provide a detailed tone analysis with:
+Provide a comprehensive ghosting analysis with:
 
-1. **OVERALL TONE**: The dominant emotional tone of the conversation (e.g., "Supportive", "Confrontational", "Playful", "Tense", "Warm", "Cold", "Passive Aggressive")
+1. **IS GHOSTED** (boolean): Whether ghosting is occurring
 
-2. **USER TONE**: Specific analysis of the user's tone based on their messages
+2. **GHOSTING STAGE**: Exact stage from these options:
+   - "Early Fade" (gradual decrease, <1 week)
+   - "Soft Ghost" (clear drop, 1-2 weeks)  
+   - "Hard Ghost" (complete silence, 2+ weeks)
+   - "Zombie Risk" (they might return)
 
-3. **OTHER PERSON TONE**: Specific analysis of the other person's tone
+3. **GHOSTING PROBABILITY** (0-1): Likelihood ghosting is happening
 
-4. **TOXICITY LEVEL**: Rate the toxicity from "None" to "High" with explanation
+4. **RECOMMENDED MESSAGES** (array): At least 5 copy-ready text options for recovery, considering the conversation context and ghosting stage
 
-5. **EMOTIONAL SIGNALS**: Array of 3-5 specific emotions detected (e.g., ["Frustration", "Affection", "Uncertainty", "Defensiveness", "Excitement"])
+5. **RECOMMENDED TONE**: Guidelines for the message tone (e.g., "light, no guilt, single emoji")
 
-6. **CONVERSATION HEALTH**: Overall health assessment ("Healthy", "Concerning", "Needs Attention", "Toxic", "Recovering")
+6. **RECOVERY CHANCE** (0-1): Probability the other person will reply if recommended message is sent
 
-7. **CONFIDENCE SCORE**: Confidence level from 0.0 to 1.0 based on image clarity and analysis complexity
+7. **MOVE ON ADVICE** (string or null): If recoveryChance < 0.25, provide 1-sentence actionable tip to move on
+
+8. **CONFIDENCE SCORE** (0-1): Based on image clarity and analysis complexity
+
+Base your analysis on message frequency, response times, conversation flow, emotional cues, and recent activity patterns. Consider the ghosting stage when crafting recovery messages.
 
 The user's request: ${prompt}
 
@@ -134,37 +143,44 @@ Respond in the exact JSON format specified.`;
       responseFormat: {
         type: 'json_schema' as const,
         jsonSchema: {
-          name: 'tone_analysis_response',
+          name: 'ghosting_recovery_response',
           strict: true,
           schema: {
             type: 'object',
             properties: {
-              overallTone: {
-                type: 'string',
-                description: 'The dominant emotional tone of the conversation',
+              isGhosted: {
+                type: 'boolean',
+                description: 'Whether ghosting is occurring',
               },
-              userTone: {
+              ghostingStage: {
                 type: 'string',
-                description: "Specific analysis of the user's tone",
+                description: 'Ghosting stage: Early Fade, Soft Ghost, Hard Ghost, or Zombie Risk',
               },
-              otherPersonTone: {
-                type: 'string',
-                description: "Specific analysis of the other person's tone",
+              ghostingProbability: {
+                type: 'number',
+                minimum: 0,
+                maximum: 1,
+                description: 'Likelihood ghosting is happening (0-1)',
               },
-              toxicityLevel: {
-                type: 'string',
-                description: 'Toxicity level rating',
-              },
-              emotionalSignals: {
+              recommendedMessage: {
                 type: 'array',
                 items: { type: 'string' },
-                minItems: 3,
-                maxItems: 5,
-                description: 'Array of specific emotions detected',
+                minItems: 5,
+                description: 'At least 5 copy-ready text options for recovery',
               },
-              conversationHealth: {
+              recommendedTone: {
                 type: 'string',
-                description: 'Overall health assessment of the conversation',
+                description: 'Guidelines for the message tone',
+              },
+              recoveryChance: {
+                type: 'number',
+                minimum: 0,
+                maximum: 1,
+                description: 'Probability the other person will reply (0-1)',
+              },
+              moveOnAdvice: {
+                type: ['string', 'null'],
+                description: '1-sentence actionable tip if recoveryChance < 0.25',
               },
               confidenceScore: {
                 type: 'number',
@@ -174,7 +190,7 @@ Respond in the exact JSON format specified.`;
               },
               toolType: {
                 type: 'string',
-                enum: ['tone-analyzer'],
+                enum: ['ghosting-recovery'],
                 description: 'Tool type identifier',
               },
               error: {
@@ -183,12 +199,13 @@ Respond in the exact JSON format specified.`;
               },
             },
             required: [
-              'overallTone',
-              'userTone',
-              'otherPersonTone',
-              'toxicityLevel',
-              'emotionalSignals',
-              'conversationHealth',
+              'isGhosted',
+              'ghostingStage',
+              'ghostingProbability',
+              'recommendedMessage',
+              'recommendedTone',
+              'recoveryChance',
+              'moveOnAdvice',
               'confidenceScore',
               'toolType',
             ],

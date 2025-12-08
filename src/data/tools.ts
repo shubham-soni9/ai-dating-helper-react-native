@@ -73,7 +73,7 @@ export const TOOLS: Tool[] = [
     description: 'Re-engage matches who ghosted you with smart follow-up messages.',
     icon: 'hourglass-outline',
     route: '/tools/ghosting-recovery',
-    isReady: false,
+    isReady: true,
     color: '#6366f1',
   },
   {
