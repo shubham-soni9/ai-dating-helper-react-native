@@ -7,6 +7,7 @@ import { useAuth } from '@/auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
 import { DMParams, DMRequest, DMResult } from '@/types/dm';
 import { API_GET_DM_BY_IMAGE } from '@/constants/apiConstants';
+import { processImageForApi } from '@/utils/imageHelper';
 import ImagePickerSection from '@/components/dm-helper/ImagePickerSection';
 import ParameterSelector from '@/components/dm-helper/ParameterSelector';
 import ExtraNotesSection from '@/components/dm-helper/ExtraNotesSection';
@@ -83,9 +84,13 @@ export default function DMHelper() {
 
     try {
       const api = API_GET_DM_BY_IMAGE;
+
+      // Process and verify image encoding
+      const processedImage = processImageForApi(image.base64);
+
       const body: DMRequest = {
         prompt: buildPrompt(),
-        image: image.base64,
+        image: processedImage,
       };
 
       let apiResult: DMResult;

@@ -50,11 +50,9 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Process image: if it's raw base64, prepend data URI scheme
-    let imageUrl = image;
-    if (!image.startsWith("http") && !image.startsWith("data:")) {
-      imageUrl = `data:image/jpeg;base64,${image}`;
-    }
+    // Process image: The client guarantees a valid Data URI (base64 encoded).
+    // We use it directly without fallback to ensure encoding integrity.
+    const imageUrl = image;
 
     const completion = await client.chat.send({
       model: "x-ai/grok-4.1-fast",
