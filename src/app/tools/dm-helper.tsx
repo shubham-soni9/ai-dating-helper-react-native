@@ -5,13 +5,13 @@ import { useAuth } from '@/auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
 import { DMParams, DMRequest, DMResult } from '@/types/dm';
 import { API_GET_DM_BY_IMAGE } from '@/constants/apiConstants';
-import ScreenHeader from './components/ScreenHeader';
-import ImagePickerSection from './components/ImagePickerSection';
-import ParameterSelector from './components/ParameterSelector';
-import ExtraNotesSection from './components/ExtraNotesSection';
-import GenerateButton from './components/GenerateButton';
-import ProgressOverlay from './components/ProgressOverlay';
-import ResultBottomSheet from './components/ResultBottomSheet';
+import ScreenHeader from '@/components/dm-helper/ScreenHeader';
+import ImagePickerSection from '@/components/dm-helper/ImagePickerSection';
+import ParameterSelector from '@/components/dm-helper/ParameterSelector';
+import ExtraNotesSection from '@/components/dm-helper/ExtraNotesSection';
+import GenerateButton from '@/components/dm-helper/GenerateButton';
+import ProgressOverlay from '@/components/dm-helper/ProgressOverlay';
+import ResultBottomSheet from '@/components/dm-helper/ResultBottomSheet';
 
 type PickedImage = { uri: string; base64?: string | null };
 
@@ -64,11 +64,11 @@ export default function DMHelper() {
       `Tone: ${selectedTone?.label || params.tone}`,
       `Intention: ${selectedInt?.label || params.intention}`,
     ];
-    
+
     if (extraNotes.trim()) {
       parts.push(`Additional Notes: ${extraNotes}`);
     }
-    
+
     return parts.join('\n');
   };
 
@@ -88,7 +88,7 @@ export default function DMHelper() {
       };
 
       let apiResult: DMResult;
-      
+
       if (api) {
         const res = await fetch(api, {
           method: 'POST',
@@ -110,7 +110,7 @@ export default function DMHelper() {
         apiResult = {
           suggestions: [
             { text: 'Hey, loved your recent post—what inspired it?' },
-            { text: 'Your vibe is great. What's the story behind that photo?' },
+            { text: "Your vibe is great. What's story behind that photo?" },
             { text: 'That looks amazing! Where did you take this?' },
           ],
           hints: [
@@ -155,14 +155,13 @@ export default function DMHelper() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScreenHeader />
-      
-      <ScrollView 
+
+      <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+        contentContainerStyle={styles.scrollContent}>
         <ImagePickerSection image={image} onImagePicked={setImage} />
-        
+
         <ParameterSelector
           params={params}
           onParamsChange={setParams}
@@ -170,14 +169,14 @@ export default function DMHelper() {
           tones={TONES}
           intentions={INTENTIONS}
         />
-        
+
         <ExtraNotesSection
           visible={showExtraNotes}
           notes={extraNotes}
           onNotesChange={setExtraNotes}
           onToggle={() => setShowExtraNotes(!showExtraNotes)}
         />
-        
+
         <View style={styles.bottomSpacer} />
       </ScrollView>
 
