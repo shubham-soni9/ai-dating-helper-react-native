@@ -5,12 +5,8 @@ export type DMParams = {
 };
 
 export type DMRequest = {
-  imageUrls: string[];
-  category: string;
-  tone: string;
-  intention: string;
   prompt: string;
-  userId: string;
+  image: string;
 };
 
 export type DMSuggestion = {

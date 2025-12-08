@@ -9,7 +9,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '@/auth/AuthProvider';
 import { API_GET_DM_BY_IMAGE } from '@/constants/apiConstants';
 
-type Picked = { uri: string };
+type Picked = { uri: string; base64?: string | null };
 
 export default function DMHelper() {
   const { colors } = useTheme();
@@ -26,12 +26,13 @@ export default function DMHelper() {
       return;
     }
     const res = await ImagePicker.launchImageLibraryAsync({
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: false,
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
+      quality: 0.5,
+      base64: true,
     });
     if (!res.canceled) {
-      setImages(res.assets.map((a) => ({ uri: a.uri })));
+      setImages(res.assets.map((a) => ({ uri: a.uri, base64: a.base64 })));
     }
   };
 
@@ -47,14 +48,15 @@ export default function DMHelper() {
 
   const onSubmit = async () => {
     try {
+      if (images.length === 0 || !images[0].base64) {
+        Alert.alert('Error', 'Please pick an image first.');
+        return;
+      }
+
       const api = API_GET_DM_BY_IMAGE;
       const body: DMRequest = {
-        imageUrls: images.map((i) => i.uri),
-        category: params.category,
-        tone: params.tone,
-        intention: params.intention,
         prompt: buildPrompt(),
-        userId: session?.userId || 'anon',
+        image: images[0].base64,
       };
       let result: DMResult;
       if (api) {
