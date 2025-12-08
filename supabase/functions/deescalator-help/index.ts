@@ -79,8 +79,41 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Build the content array with prompt and images
-    const content: any[] = [{ type: "text", text: prompt }];
+    // Enhanced prompt for better analysis
+    const enhancedPrompt =
+      `You are a relationship expert AI. Analyze the provided chat screenshots and provide comprehensive de-escalation guidance.
+
+FIRST - VALIDATE: Check if these are actually chat screenshots. If they are NOT chat screenshots (like random photos, landscapes, objects, etc.), respond with:
+{
+  "situationAnalysis": "",
+  "partnerEmotions": [],
+  "partnerNeeds": [],
+  "suggestions": [],
+  "approach": "",
+  "nextSteps": [],
+  "error": "Please provide screenshots of your chat conversations, not other types of images."
+}
+
+IF THEY ARE CHAT SCREENSHOTS, analyze them and provide:
+
+1. **SITUATION ANALYSIS**: Briefly explain what's happening in the conversation - the context, main issues, and current state of the relationship dynamic.
+
+2. **PARTNER'S EMOTIONS**: Identify 2-4 specific emotions your partner is likely feeling right now (e.g., frustrated, hurt, disappointed, anxious, angry, confused, etc.)
+
+3. **PARTNER'S NEEDS**: Identify 2-4 underlying needs or desires your partner has in this situation (e.g., feeling heard, getting reassurance, needing space, wanting validation, etc.)
+
+4. **DE-ESCALATION SUGGESTIONS**: Provide 3-5 specific message suggestions that directly address the situation and partner's emotional needs.
+
+5. **APPROACH STRATEGY**: Explain the overall approach you should take - the mindset, tone, and general strategy.
+
+6. **NEXT STEPS**: Provide 2-4 concrete actions to take after sending the initial de-escalation message.
+
+The user's request: ${prompt}
+
+Respond in the exact JSON format specified.`;
+
+    // Build the content array with enhanced prompt and images
+    const content: any[] = [{ type: "text", text: enhancedPrompt }];
 
     // Add all images to the content
     images.forEach((image, index) => {
@@ -108,6 +141,24 @@ Deno.serve(async (req) => {
           schema: {
             type: "object",
             properties: {
+              situationAnalysis: {
+                type: "string",
+                description: "Analysis of what's happening in the conversation",
+              },
+              partnerEmotions: {
+                type: "array",
+                items: { type: "string" },
+                minItems: 2,
+                maxItems: 4,
+                description: "Partner's current emotions",
+              },
+              partnerNeeds: {
+                type: "array",
+                items: { type: "string" },
+                minItems: 2,
+                maxItems: 4,
+                description: "Partner's underlying needs",
+              },
               suggestions: {
                 type: "array",
                 items: { type: "string" },
@@ -127,8 +178,19 @@ Deno.serve(async (req) => {
                 maxItems: 4,
                 description: "Recommended next steps after sending the message",
               },
+              error: {
+                type: "string",
+                description: "Error message if images are not chat screenshots",
+              },
             },
-            required: ["suggestions", "approach", "nextSteps"],
+            required: [
+              "situationAnalysis",
+              "partnerEmotions",
+              "partnerNeeds",
+              "suggestions",
+              "approach",
+              "nextSteps",
+            ],
             additionalProperties: false,
           },
         },

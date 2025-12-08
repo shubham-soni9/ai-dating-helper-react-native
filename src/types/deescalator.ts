@@ -9,7 +9,11 @@ export type DeescalatorRequest = {
 };
 
 export type DeescalatorResult = {
+  situationAnalysis: string;
+  partnerEmotions: string[];
+  partnerNeeds: string[];
   suggestions: string[];
   approach: string;
   nextSteps: string[];
+  error?: string;
 };

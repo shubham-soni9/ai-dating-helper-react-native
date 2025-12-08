@@ -44,44 +44,85 @@ export default function DeescalatorResultBottomSheet({
       <Pressable style={styles.overlay} onPress={onClose}>
         <Pressable style={[styles.container, { backgroundColor: colors.surface }]}>
           <View style={styles.header}>
-            <Text style={[styles.title, { color: colors.text }]}>De-escalation Suggestions</Text>
+            <Text style={[styles.title, { color: colors.text }]}>
+              {result.error ? 'Invalid Image' : 'De-escalation Analysis'}
+            </Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Text style={[styles.closeText, { color: colors.mutedText }]}>✕</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.content}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Approach</Text>
-            <Text style={[styles.approachText, { color: colors.mutedText }]}>
-              {result.approach}
-            </Text>
+            {result.error ? (
+              <View style={styles.errorContainer}>
+                <Text style={[styles.errorText, { color: colors.accent }]}>⚠️ {result.error}</Text>
+              </View>
+            ) : (
+              <>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                  Situation Analysis
+                </Text>
+                <Text style={[styles.analysisText, { color: colors.mutedText }]}>
+                  {result.situationAnalysis}
+                </Text>
 
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Suggestions</Text>
-            <FlatList
-              data={result.suggestions}
-              keyExtractor={(_, index) => index.toString()}
-              renderItem={({ item, index }) => (
-                <View style={styles.suggestionContainer}>
-                  <Text style={[styles.suggestionText, { color: colors.text }]}>• {item}</Text>
-                  <TouchableOpacity
-                    onPress={() => copyToClipboard(item, index)}
-                    style={styles.copyButton}>
-                    <Text style={[styles.copyText, { color: colors.primary }]}>
-                      {copiedIndex === index ? '✓ Copied!' : 'Copy'}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                  What Your Partner is Feeling
+                </Text>
+                <FlatList
+                  data={result.partnerEmotions}
+                  keyExtractor={(_, index) => index.toString()}
+                  renderItem={({ item }) => (
+                    <Text style={[styles.emotionText, { color: colors.text }]}>• {item}</Text>
+                  )}
+                />
 
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Next Steps</Text>
-            <FlatList
-              data={result.nextSteps}
-              keyExtractor={(_, index) => index.toString()}
-              renderItem={({ item }) => (
-                <Text style={[styles.nextStepText, { color: colors.mutedText }]}>• {item}</Text>
-              )}
-            />
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                  What Your Partner Needs
+                </Text>
+                <FlatList
+                  data={result.partnerNeeds}
+                  keyExtractor={(_, index) => index.toString()}
+                  renderItem={({ item }) => (
+                    <Text style={[styles.needText, { color: colors.text }]}>• {item}</Text>
+                  )}
+                />
+
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>Approach Strategy</Text>
+                <Text style={[styles.approachText, { color: colors.mutedText }]}>
+                  {result.approach}
+                </Text>
+
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                  Message Suggestions
+                </Text>
+                <FlatList
+                  data={result.suggestions}
+                  keyExtractor={(_, index) => index.toString()}
+                  renderItem={({ item, index }) => (
+                    <View style={styles.suggestionContainer}>
+                      <Text style={[styles.suggestionText, { color: colors.text }]}>• {item}</Text>
+                      <TouchableOpacity
+                        onPress={() => copyToClipboard(item, index)}
+                        style={styles.copyButton}>
+                        <Text style={[styles.copyText, { color: colors.primary }]}>
+                          {copiedIndex === index ? '✓ Copied!' : 'Copy'}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                />
+
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>Next Steps</Text>
+                <FlatList
+                  data={result.nextSteps}
+                  keyExtractor={(_, index) => index.toString()}
+                  renderItem={({ item }) => (
+                    <Text style={[styles.nextStepText, { color: colors.mutedText }]}>• {item}</Text>
+                  )}
+                />
+              </>
+            )}
           </View>
         </Pressable>
       </Pressable>
@@ -128,10 +169,25 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
   },
+  analysisText: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 16,
+  },
   approachText: {
     fontSize: 14,
     lineHeight: 20,
     marginBottom: 16,
+  },
+  emotionText: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 6,
+  },
+  needText: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 6,
   },
   suggestionContainer: {
     flexDirection: 'row',
@@ -160,5 +216,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     marginBottom: 6,
+  },
+  errorContainer: {
+    backgroundColor: 'rgba(255,0,0,0.1)',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  errorText: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '600',
   },
 });
