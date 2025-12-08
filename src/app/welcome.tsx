@@ -5,10 +5,12 @@ import { Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StarRatingDisplay } from 'react-native-star-rating-widget';
 import { useAuth } from '@/auth/AuthProvider';
+import { useTheme } from '@/theme/ThemeProvider';
 
 export default function Welcome() {
   const route = useRouter();
   const { session, subscription, initialized } = useAuth();
+  const { colors } = useTheme();
 
   const openCreateUser = () => {
     if (session) {
@@ -30,7 +32,7 @@ export default function Welcome() {
   });
 
   return (
-    <SafeAreaView className="flex-1 items-center">
+    <SafeAreaView className="flex-1 items-center" style={{ backgroundColor: colors.background }}>
       <ScrollView contentContainerStyle={styles.scrollStyle}>
         <VideoView
           player={player}
@@ -39,7 +41,9 @@ export default function Welcome() {
           nativeControls={false}
         />
 
-        <Text className="mb-4 mt-5 text-2xl font-bold">Let&apos;s up your game</Text>
+        <Text className="mb-4 mt-5 text-2xl font-bold" style={{ color: colors.text }}>
+          Let&apos;s up your game
+        </Text>
 
         <StarRatingDisplay
           rating={5}
@@ -48,9 +52,12 @@ export default function Welcome() {
           starStyle={{ marginHorizontal: 0 }}
         />
 
-        <Text className="mx-10 my-5 text-center text-xl">
-          Join <Text className="text-3xl font-bold">10000+</Text> happy users increasing their
-          matches every day
+        <Text className="mx-10 my-5 text-center text-xl" style={{ color: colors.text }}>
+          Join{' '}
+          <Text className="text-3xl font-bold" style={{ color: colors.text }}>
+            10000+
+          </Text>{' '}
+          happy users increasing their matches every day
         </Text>
 
         <Button

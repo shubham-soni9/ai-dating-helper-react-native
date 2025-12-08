@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { PaperProvider, MD3DarkTheme } from 'react-native-paper';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 import { AuthProvider, useAuth } from '@/auth/AuthProvider';
 
@@ -7,12 +8,30 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <AuthProvider>
-          <ThemedStack />
-        </AuthProvider>
+        <PaperThemeWrapper>
+          <AuthProvider>
+            <ThemedStack />
+          </AuthProvider>
+        </PaperThemeWrapper>
       </ThemeProvider>
     </SafeAreaProvider>
   );
+}
+
+function PaperThemeWrapper({ children }: { children: React.ReactNode }) {
+  const { colors } = useTheme();
+  const paperTheme = {
+    ...MD3DarkTheme,
+    colors: {
+      ...MD3DarkTheme.colors,
+      primary: colors.primary,
+      onPrimary: colors.onPrimary,
+      background: colors.background,
+      surface: colors.surface,
+      onSurface: colors.text,
+    },
+  };
+  return <PaperProvider theme={paperTheme}>{children}</PaperProvider>;
 }
 
 function ThemedStack() {
