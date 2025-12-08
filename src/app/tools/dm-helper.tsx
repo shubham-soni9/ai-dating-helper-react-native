@@ -7,6 +7,7 @@ import Button from '@/components/Button';
 import { DMParams, DMRequest, DMResult } from '@/types/dm';
 import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '@/auth/AuthProvider';
+import { API_GET_DM_BY_IMAGE } from '@/constants/apiConstants';
 
 type Picked = { uri: string };
 
@@ -46,7 +47,7 @@ export default function DMHelper() {
 
   const onSubmit = async () => {
     try {
-      const api = process.env.EXPO_PUBLIC_DM_API_URL;
+      const api = API_GET_DM_BY_IMAGE;
       const body: DMRequest = {
         imageUrls: images.map((i) => i.uri),
         category: params.category,
