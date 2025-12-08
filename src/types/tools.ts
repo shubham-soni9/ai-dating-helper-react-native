@@ -8,4 +8,5 @@ export type Tool = {
   route: string;
   isReady: boolean;
   color?: string;
+  badge?: string;
 };
