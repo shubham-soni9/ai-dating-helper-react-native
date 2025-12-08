@@ -7,7 +7,6 @@ import { useAuth } from '@/auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
 import { DMParams, DMRequest, DMResult } from '@/types/dm';
 import { API_GET_DM_BY_IMAGE } from '@/constants/apiConstants';
-import ScreenHeader from '@/components/dm-helper/ScreenHeader';
 import ImagePickerSection from '@/components/dm-helper/ImagePickerSection';
 import ParameterSelector from '@/components/dm-helper/ParameterSelector';
 import ExtraNotesSection from '@/components/dm-helper/ExtraNotesSection';
@@ -161,8 +160,7 @@ export default function DMHelper() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
-      <Stack.Screen options={{ headerShown: true, title: 'DM Helper' }} />
-      <ScreenHeader />
+      <Stack.Screen options={{ headerShown: true, title: 'DM Helper', headerBackTitle: '' }} />
 
       <ScrollView
         style={styles.scrollView}
