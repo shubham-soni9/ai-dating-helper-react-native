@@ -1,79 +1,81 @@
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/theme/ThemeProvider';
-import { useAuth } from '@/auth/AuthProvider';
+import { Ionicons } from '@expo/vector-icons';
+import { Platform } from 'react-native';
 
-export default function DashboardLayout() {
+export default function TabsLayout() {
   const { colors } = useTheme();
-  const { subscription } = useAuth();
-  // Dummy Change
-  // const isPaid = subscription.isSubscribed || subscription.trialActive;
-  const isPaid = true;
+
   return (
     <Tabs
-      initialRouteName="home"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.tabInactive,
+        tabBarInactiveTintColor: colors.mutedText,
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
           borderTopWidth: 1,
+          height: Platform.OS === 'ios' ? 88 : 64,
+          paddingBottom: Platform.OS === 'ios' ? 24 : 8,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+          marginTop: 4,
+        },
+        tabBarIconStyle: {
+          marginTop: 4,
         },
       }}>
-      <Tabs.Protected guard={isPaid}>
-        <Tabs.Screen
-          name="home"
-          options={{
-            tabBarLabel: 'Home',
-            title: 'Home',
-            tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="history"
-          options={{
-            tabBarLabel: 'History',
-            title: 'History',
-            tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="tools"
-          options={{
-            tabBarLabel: 'Tools',
-            title: 'Tools',
-            tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons name={focused ? 'grid' : 'grid-outline'} size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="resources"
-          options={{
-            tabBarLabel: 'Resources',
-            title: 'Resources',
-            tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons name={focused ? 'book' : 'book-outline'} size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            tabBarLabel: 'Profile',
-            title: 'Profile',
-            tabBarIcon: ({ color, size, focused }) => (
-              <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} />
-            ),
-          }}
-        />
-      </Tabs.Protected>
+      {/* Home Tab */}
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
+          ),
+        }}
+      />
+
+      {/* Tools Tab */}
+      <Tabs.Screen
+        name="tools"
+        options={{
+          title: 'Tools',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'construct' : 'construct-outline'} size={24} color={color} />
+          ),
+        }}
+      />
+
+      {/* Tools Tab */}
+      <Tabs.Screen
+        name="resources"
+        options={{
+          title: 'Resources',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'book' : 'book-outline'} size={24} color={color} />
+          ),
+        }}
+      />
+
+      {/* Profile Tab */}
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? 'person-circle' : 'person-circle-outline'}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
