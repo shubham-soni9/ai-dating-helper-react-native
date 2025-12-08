@@ -1,5 +1,5 @@
 // Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts"
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { OpenRouter } from "@openrouter/sdk";
 
 const corsHeaders = {
@@ -50,6 +50,12 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Process image: if it's raw base64, prepend data URI scheme
+    let imageUrl = image;
+    if (!image.startsWith("http") && !image.startsWith("data:")) {
+      imageUrl = `data:image/jpeg;base64,${image}`;
+    }
+
     const completion = await client.chat.send({
       model: "x-ai/grok-4.1-fast",
       messages: [
@@ -57,7 +63,7 @@ Deno.serve(async (req) => {
           role: "user",
           content: [
             { type: "text", text: prompt },
-            { type: "image_url", imageUrl: { url: image } },
+            { type: "image_url", imageUrl: { url: imageUrl } },
           ],
         },
       ],
