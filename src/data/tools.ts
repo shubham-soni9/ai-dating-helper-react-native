@@ -2,6 +2,16 @@ import { Tool } from "@/types/tools";
 
 export const TOOLS: Tool[] = [
   {
+    id: "deescalate",
+    title: "De-escalator",
+    description:
+      "Transform awkward conversations into positive exchanges with smart techniques.",
+    icon: "shield-checkmark-outline",
+    route: "/tools/deescalate",
+    isReady: true,
+    color: "#10b981",
+  },
+  {
     id: "red-flag-detector",
     title: "Red Flag Detector",
     description:
@@ -83,16 +93,6 @@ export const TOOLS: Tool[] = [
     route: "/tools/tone-analyzer",
     isReady: false,
     color: "#ec4899",
-  },
-  {
-    id: "deescalate",
-    title: "De-escalator",
-    description:
-      "Transform awkward conversations into positive exchanges with smart techniques.",
-    icon: "shield-checkmark-outline",
-    route: "/tools/deescalate",
-    isReady: true,
-    color: "#10b981",
   },
   {
     id: "first-date-coach",

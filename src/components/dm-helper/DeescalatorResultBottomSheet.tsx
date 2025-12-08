@@ -1,0 +1,164 @@
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  Pressable,
+  FlatList,
+  Alert,
+} from 'react-native';
+import * as Clipboard from 'expo-clipboard';
+import { useTheme } from '@/theme/ThemeProvider';
+import { DeescalatorResult } from '@/types/deescalator';
+
+interface DeescalatorResultBottomSheetProps {
+  visible: boolean;
+  result: DeescalatorResult | null;
+  onClose: () => void;
+}
+
+export default function DeescalatorResultBottomSheet({
+  visible,
+  result,
+  onClose,
+}: DeescalatorResultBottomSheetProps) {
+  const { colors } = useTheme();
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+  const copyToClipboard = async (text: string, index: number) => {
+    try {
+      await Clipboard.setStringAsync(text);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch {
+      Alert.alert('Error', 'Failed to copy to clipboard');
+    }
+  };
+
+  if (!visible || !result) return null;
+
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <Pressable style={styles.overlay} onPress={onClose}>
+        <Pressable style={[styles.container, { backgroundColor: colors.surface }]}>
+          <View style={styles.header}>
+            <Text style={[styles.title, { color: colors.text }]}>De-escalation Suggestions</Text>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Text style={[styles.closeText, { color: colors.mutedText }]}>✕</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.content}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Approach</Text>
+            <Text style={[styles.approachText, { color: colors.mutedText }]}>
+              {result.approach}
+            </Text>
+
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Suggestions</Text>
+            <FlatList
+              data={result.suggestions}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item, index }) => (
+                <View style={styles.suggestionContainer}>
+                  <Text style={[styles.suggestionText, { color: colors.text }]}>• {item}</Text>
+                  <TouchableOpacity
+                    onPress={() => copyToClipboard(item, index)}
+                    style={styles.copyButton}>
+                    <Text style={[styles.copyText, { color: colors.primary }]}>
+                      {copiedIndex === index ? '✓ Copied!' : 'Copy'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Next Steps</Text>
+            <FlatList
+              data={result.nextSteps}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item }) => (
+                <Text style={[styles.nextStepText, { color: colors.mutedText }]}>• {item}</Text>
+              )}
+            />
+          </View>
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+}
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  container: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '80%',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.1)',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  closeButton: {
+    padding: 8,
+  },
+  closeText: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  content: {
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  approachText: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  suggestionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+    paddingRight: 8,
+  },
+  suggestionText: {
+    fontSize: 14,
+    lineHeight: 20,
+    flex: 1,
+    marginRight: 12,
+  },
+  copyButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+  },
+  copyText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  nextStepText: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 6,
+  },
+});
