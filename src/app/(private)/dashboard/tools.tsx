@@ -47,11 +47,7 @@ export default function ToolsTab() {
 
   const renderItem = ({ item }: { item: Tool }) => (
     <Pressable
-      onPress={() => {
-        if (item.isReady) {
-          router.push(item.route as any);
-        }
-      }}
+      onPress={() => item.isReady && router.push(item.route as any)}
       disabled={!item.isReady}
       style={({ pressed }) => [
         styles.card,
@@ -61,6 +57,9 @@ export default function ToolsTab() {
           borderWidth: item.badge === 'Critical' ? 1.5 : 1,
           opacity: !item.isReady ? 0.7 : pressed ? 0.95 : 1,
           transform: [{ scale: pressed && item.isReady ? 0.98 : 1 }],
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: 12,
         },
       ]}>
       {item.badge === 'Critical' && (
@@ -71,34 +70,49 @@ export default function ToolsTab() {
           style={styles.gradientOverlay}
         />
       )}
-      <View style={[styles.iconContainer, { backgroundColor: item.color + '20' }]}>
-        <Ionicons name={item.icon} size={26} color={item.color || colors.primary} />
+
+      <View style={[styles.iconContainer, { backgroundColor: item.color + '20', marginRight: 12 }]}>
+        <Ionicons name={item.icon} size={20} color={item.color || colors.primary} />
       </View>
-      <View style={styles.textContainer}>
-        <View style={styles.headerRow}>
-          <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
+
+      <View style={{ flex: 1 }}>
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text
+            style={[styles.title, { color: colors.text, fontSize: 14, flex: 1 }]}
+            numberOfLines={1}>
             {item.title}
           </Text>
-          {item.badge && (
-            <View style={[styles.badge, { backgroundColor: item.color }]}>
-              <Text style={styles.badgeText}>{item.badge}</Text>
+
+          {item.badge === 'Critical' && (
+            <View
+              style={[
+                styles.badge,
+                {
+                  backgroundColor: item.color,
+                  position: 'absolute',
+                  right: 0,
+                  top: -4,
+                  paddingHorizontal: 6,
+                  paddingVertical: 2,
+                  borderRadius: 8,
+                },
+              ]}>
+              <Text style={[styles.badgeText, { fontSize: 9 }]}>{item.badge}</Text>
             </View>
           )}
+
           {!item.isReady && !item.badge && (
-            <View style={[styles.badge, { backgroundColor: colors.border }]}>
-              <Text style={[styles.badgeText, { color: colors.mutedText }]}>Soon</Text>
-            </View>
+            <Text style={{ color: colors.mutedText, fontSize: 11, marginLeft: 8 }}>Soon</Text>
           )}
         </View>
-        <Text style={[styles.description, { color: colors.mutedText }]} numberOfLines={2}>
+
+        <Text
+          style={[styles.description, { color: colors.mutedText, fontSize: 12, marginTop: 4 }]}
+          numberOfLines={2}>
           {item.description}
         </Text>
       </View>
-      <Ionicons
-        name={item.isReady ? 'arrow-forward' : 'lock-closed'}
-        size={20}
-        color={item.isReady ? colors.mutedText : colors.border}
-      />
     </Pressable>
   );
 
