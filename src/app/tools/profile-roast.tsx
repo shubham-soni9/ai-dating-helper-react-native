@@ -106,7 +106,9 @@ export default function ProfileRoast() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      edges={['bottom', 'left', 'right']}>
       <Stack.Screen options={{ headerShown: true, title: '', headerBackTitle: 'Profile Roast' }} />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
