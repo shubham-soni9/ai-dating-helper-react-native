@@ -51,13 +51,13 @@ export default function TabsLayout() {
         }}
       />
 
-      {/* Tools Tab */}
+      {/* Analytics Tab */}
       <Tabs.Screen
-        name="resources"
+        name="analytics"
         options={{
-          title: 'Resources',
+          title: 'Analytics',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'book' : 'book-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'analytics' : 'analytics-outline'} size={24} color={color} />
           ),
         }}
       />
