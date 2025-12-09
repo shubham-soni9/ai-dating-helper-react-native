@@ -66,9 +66,12 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const system = useColorScheme();
   const [mode, setMode] = useState<ThemeMode>('dark');
-  const effective = 'dark';
-  const isDark = true;
-  const colors = darkColors;
+  
+  // Determine effective theme based on mode and system preference
+  const effective = mode === 'system' ? (system || 'light') : mode;
+  const isDark = effective === 'dark';
+  const colors = isDark ? darkColors : lightColors;
+  
   const value = useMemo(() => ({ mode, setMode, colors, isDark }), [mode, colors, isDark]);
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
