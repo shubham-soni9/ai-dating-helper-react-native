@@ -49,191 +49,191 @@ export default function ProfileRoastResultBottomSheet({
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable
-          style={[styles.sheet, { backgroundColor: colors.background }]}
-          onPress={() => {}}>
-          {/* Handle bar */}
-          <View style={styles.handleContainer}>
-            <View style={[styles.handle, { backgroundColor: colors.border }]} />
-          </View>
+      <Pressable style={styles.backdrop} onPress={onClose} />
+      <View style={[styles.sheet, { backgroundColor: colors.background }]}>
+        {/* Handle bar */}
+        <View style={styles.handleContainer}>
+          <View style={[styles.handle, { backgroundColor: colors.border }]} />
+        </View>
 
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={[styles.headerTitle, { color: colors.text }]}>Profile Analysis</Text>
-            <TouchableOpacity
-              onPress={onClose}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-              <Text style={[styles.closeButton, { color: colors.mutedText }]}>✕</Text>
-            </TouchableOpacity>
-          </View>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>Profile Analysis</Text>
+          <TouchableOpacity
+            onPress={onClose}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <Text style={[styles.closeButton, { color: colors.mutedText }]}>✕</Text>
+          </TouchableOpacity>
+        </View>
 
-          {/* Score Card - Eye catching design */}
-          <View style={styles.scoreCard}>
-            <View style={[styles.scoreCircle, { borderColor: getScoreColor(result.profileScore) }]}>
-              <Text style={[styles.scoreText, { color: getScoreColor(result.profileScore) }]}>
-                {result.profileScore}
-              </Text>
-              <Text style={[styles.scoreSubText, { color: getScoreColor(result.profileScore) }]}>
-                /100
-              </Text>
-            </View>
-            <Text style={[styles.scoreEmoji, { color: colors.text }]}>
-              {getScoreEmoji(result.profileScore)}
+        {/* Score Card - Eye catching design */}
+        <View style={styles.scoreCard}>
+          <View style={[styles.scoreCircle, { borderColor: getScoreColor(result.profileScore) }]}>
+            <Text style={[styles.scoreText, { color: getScoreColor(result.profileScore) }]}>
+              {result.profileScore}
             </Text>
-            <Text style={[styles.scoreMessage, { color: colors.text }]}>
-              {getScoreMessage(result.profileScore)}
-            </Text>
-            <Text style={[styles.roastHeadline, { color: colors.mutedText }]}>
-              {result.roastHeadline}
+            <Text style={[styles.scoreSubText, { color: getScoreColor(result.profileScore) }]}>
+              /100
             </Text>
           </View>
+          <Text style={[styles.scoreEmoji, { color: colors.text }]}>
+            {getScoreEmoji(result.profileScore)}
+          </Text>
+          <Text style={[styles.scoreMessage, { color: colors.text }]}>
+            {getScoreMessage(result.profileScore)}
+          </Text>
+          <Text style={[styles.roastHeadline, { color: colors.mutedText }]}>
+            {result.roastHeadline}
+          </Text>
+        </View>
 
-          {/* Content with proper scrolling */}
-          <ScrollView
-            style={styles.content}
-            showsVerticalScrollIndicator={false}
-            bounces={true}
-            overScrollMode="never"
-            nestedScrollEnabled={true}
-            keyboardShouldPersistTaps="handled">
-            {/* Strengths Section */}
-            {result.strengths.length > 0 && (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={[styles.sectionTitle, { color: '#4CAF50' }]}>💪 Your Strengths</Text>
-                  <View style={[styles.sectionBadge, { backgroundColor: '#4CAF5020' }]}>
-                    <Text style={[styles.sectionBadgeText, { color: '#4CAF50' }]}>
-                      {result.strengths.length}
-                    </Text>
-                  </View>
-                </View>
-                {result.strengths.map((strength, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.itemCard,
-                      { backgroundColor: colors.surface, borderColor: colors.border },
-                    ]}>
-                    <Text style={[styles.itemText, { color: colors.text }]}>• {strength}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
-
-            {/* Weaknesses Section */}
-            {result.weaknesses.length > 0 && (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={[styles.sectionTitle, { color: '#FF9800' }]}>
-                    ⚠️ Areas to Improve
+        {/* Content with proper scrolling */}
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          bounces={true}
+          overScrollMode="never"
+          nestedScrollEnabled={true}
+          keyboardShouldPersistTaps="handled">
+          {/* Strengths Section */}
+          {result.strengths.length > 0 && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={[styles.sectionTitle, { color: '#4CAF50' }]}>💪 Your Strengths</Text>
+                <View style={[styles.sectionBadge, { backgroundColor: '#4CAF5020' }]}>
+                  <Text style={[styles.sectionBadgeText, { color: '#4CAF50' }]}>
+                    {result.strengths.length}
                   </Text>
-                  <View style={[styles.sectionBadge, { backgroundColor: '#FF980020' }]}>
-                    <Text style={[styles.sectionBadgeText, { color: '#FF9800' }]}>
-                      {result.weaknesses.length}
-                    </Text>
-                  </View>
-                </View>
-                {result.weaknesses.map((weakness, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.itemCard,
-                      { backgroundColor: colors.surface, borderColor: colors.border },
-                    ]}>
-                    <Text style={[styles.itemText, { color: colors.text }]}>• {weakness}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
-
-            {/* Quick Fixes Section */}
-            {result.quickFixes.length > 0 && (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={[styles.sectionTitle, { color: '#2196F3' }]}>🔧 Quick Fixes</Text>
-                  <View style={[styles.sectionBadge, { backgroundColor: '#2196F320' }]}>
-                    <Text style={[styles.sectionBadgeText, { color: '#2196F3' }]}>
-                      {result.quickFixes.length}
-                    </Text>
-                  </View>
-                </View>
-                {result.quickFixes.map((fix, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.itemCard,
-                      { backgroundColor: colors.surface, borderColor: colors.border },
-                    ]}>
-                    <Text style={[styles.itemText, { color: colors.text }]}>• {fix}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
-
-            {/* Photo Scores */}
-            {result.photoScores && result.photoScores.length > 0 && (
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>📸 Photo Scores</Text>
-                <View style={styles.photoScoresGrid}>
-                  {result.photoScores.map((score, index) => (
-                    <View
-                      key={index}
-                      style={[
-                        styles.photoScoreCard,
-                        { backgroundColor: colors.surface, borderColor: colors.border },
-                      ]}>
-                      <Text style={[styles.photoScoreNumber, { color: colors.text }]}>
-                        Photo {index + 1}
-                      </Text>
-                      <Text style={[styles.photoScoreValue, { color: getScoreColor(score) }]}>
-                        {score}/100
-                      </Text>
-                    </View>
-                  ))}
                 </View>
               </View>
-            )}
-
-            {/* Bio Score */}
-            {result.bioScore && (
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>📝 Bio Score</Text>
+              {result.strengths.map((strength, index) => (
                 <View
+                  key={index}
                   style={[
-                    styles.bioScoreCard,
+                    styles.itemCard,
                     { backgroundColor: colors.surface, borderColor: colors.border },
                   ]}>
-                  <Text style={[styles.bioScoreValue, { color: getScoreColor(result.bioScore) }]}>
-                    {result.bioScore}/100
+                  <Text style={[styles.itemText, { color: colors.text }]}>• {strength}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Weaknesses Section */}
+          {result.weaknesses.length > 0 && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={[styles.sectionTitle, { color: '#FF9800' }]}>
+                  ⚠️ Areas to Improve
+                </Text>
+                <View style={[styles.sectionBadge, { backgroundColor: '#FF980020' }]}>
+                  <Text style={[styles.sectionBadgeText, { color: '#FF9800' }]}>
+                    {result.weaknesses.length}
                   </Text>
                 </View>
               </View>
-            )}
-
-            {/* Confidence */}
-            <View style={styles.confidenceSection}>
-              <Text style={[styles.confidenceText, { color: colors.mutedText }]}>
-                Analysis Confidence: {Math.round(result.confidenceScore * 100)}%
-              </Text>
+              {result.weaknesses.map((weakness, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.itemCard,
+                    { backgroundColor: colors.surface, borderColor: colors.border },
+                  ]}>
+                  <Text style={[styles.itemText, { color: colors.text }]}>• {weakness}</Text>
+                </View>
+              ))}
             </View>
+          )}
 
-            {/* Bottom padding to ensure last content is visible */}
-            <View style={{ height: 40 }} />
-          </ScrollView>
-        </Pressable>
-      </Pressable>
+          {/* Quick Fixes Section */}
+          {result.quickFixes.length > 0 && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={[styles.sectionTitle, { color: '#2196F3' }]}>🔧 Quick Fixes</Text>
+                <View style={[styles.sectionBadge, { backgroundColor: '#2196F320' }]}>
+                  <Text style={[styles.sectionBadgeText, { color: '#2196F3' }]}>
+                    {result.quickFixes.length}
+                  </Text>
+                </View>
+              </View>
+              {result.quickFixes.map((fix, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.itemCard,
+                    { backgroundColor: colors.surface, borderColor: colors.border },
+                  ]}>
+                  <Text style={[styles.itemText, { color: colors.text }]}>• {fix}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Photo Scores */}
+          {result.photoScores && result.photoScores.length > 0 && (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>📸 Photo Scores</Text>
+              <View style={styles.photoScoresGrid}>
+                {result.photoScores.map((score, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.photoScoreCard,
+                      { backgroundColor: colors.surface, borderColor: colors.border },
+                    ]}>
+                    <Text style={[styles.photoScoreNumber, { color: colors.text }]}>
+                      Photo {index + 1}
+                    </Text>
+                    <Text style={[styles.photoScoreValue, { color: getScoreColor(score) }]}>
+                      {score}/100
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* Bio Score */}
+          {result.bioScore && (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>📝 Bio Score</Text>
+              <View
+                style={[
+                  styles.bioScoreCard,
+                  { backgroundColor: colors.surface, borderColor: colors.border },
+                ]}>
+                <Text style={[styles.bioScoreValue, { color: getScoreColor(result.bioScore) }]}>
+                  {result.bioScore}/100
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Confidence */}
+          <View style={styles.confidenceSection}>
+            <Text style={[styles.confidenceText, { color: colors.mutedText }]}>
+              Analysis Confidence: {Math.round(result.confidenceScore * 100)}%
+            </Text>
+          </View>
+
+          {/* Bottom padding to ensure last content is visible */}
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
+  backdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
   },
   sheet: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     height: '90%',
