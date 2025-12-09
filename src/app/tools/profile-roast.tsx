@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -12,6 +12,7 @@ import Dropdown from '@/components/dm-helper/Dropdown';
 import ExtraNotesSection from '@/components/dm-helper/ExtraNotesSection';
 import GenerateButton from '@/components/dm-helper/GenerateButton';
 import ProgressOverlay from '@/components/dm-helper/ProgressOverlay';
+import ProfileRoastResultBottomSheet from '@/components/dm-helper/ProfileRoastResultBottomSheet';
 
 type PickedImage = { uri: string; base64?: string | null };
 
@@ -81,6 +82,7 @@ export default function ProfileRoast() {
       });
 
       const data = await response.json();
+      console.log('Profile roast response:', data);
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to analyze profile');
@@ -105,7 +107,7 @@ export default function ProfileRoast() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <Stack.Screen options={{ title: 'Profile Roast' }} />
+      <Stack.Screen options={{ headerShown: true, title: '', headerBackTitle: 'Profile Roast' }} />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
@@ -152,81 +154,12 @@ export default function ProfileRoast() {
       {/* Loading Overlay - Reusing existing component */}
       <ProgressOverlay visible={isLoading} />
 
-      {/* Result Modal - Simple result display */}
-      {showResult && result && (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showResult}
-          onRequestClose={() => setShowResult(false)}>
-          <View style={[styles.modalOverlay, { backgroundColor: 'rgba(0,0,0,0.5)' }]}>
-            <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
-              <View style={styles.modalHeader}>
-                <Text style={[styles.modalTitle, { color: colors.text }]}>
-                  Profile Roast Results
-                </Text>
-                <TouchableOpacity onPress={() => setShowResult(false)}>
-                  <Text style={[styles.closeButton, { color: colors.text }]}>✕</Text>
-                </TouchableOpacity>
-              </View>
-
-              <ScrollView style={styles.modalBody}>
-                <Text style={[styles.scoreText, { color: colors.primary }]}>
-                  Profile Score: {result.profileScore}/100
-                </Text>
-                <Text style={[styles.headlineText, { color: colors.text }]}>
-                  {result.roastHeadline}
-                </Text>
-
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Strengths:</Text>
-                {result.strengths.map((strength, index) => (
-                  <Text key={index} style={[styles.listItem, { color: colors.text }]}>
-                    • {strength}
-                  </Text>
-                ))}
-
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Weaknesses:</Text>
-                {result.weaknesses.map((weakness, index) => (
-                  <Text key={index} style={[styles.listItem, { color: colors.text }]}>
-                    • {weakness}
-                  </Text>
-                ))}
-
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Quick Fixes:</Text>
-                {result.quickFixes.map((fix, index) => (
-                  <Text key={index} style={[styles.listItem, { color: colors.text }]}>
-                    • {fix}
-                  </Text>
-                ))}
-
-                {result.photoScores && (
-                  <>
-                    <Text style={[styles.sectionTitle, { color: colors.text }]}>Photo Scores:</Text>
-                    {result.photoScores.map((score, index) => (
-                      <Text key={index} style={[styles.listItem, { color: colors.text }]}>
-                        Photo {index + 1}: {score}/100
-                      </Text>
-                    ))}
-                  </>
-                )}
-
-                {result.bioScore && (
-                  <>
-                    <Text style={[styles.sectionTitle, { color: colors.text }]}>Bio Score:</Text>
-                    <Text style={[styles.listItem, { color: colors.text }]}>
-                      {result.bioScore}/100
-                    </Text>
-                  </>
-                )}
-
-                <Text style={[styles.confidenceText, { color: colors.mutedText }]}>
-                  Confidence: {Math.round(result.confidenceScore * 100)}%
-                </Text>
-              </ScrollView>
-            </View>
-          </View>
-        </Modal>
-      )}
+      {/* Result Bottom Sheet */}
+      <ProfileRoastResultBottomSheet
+        visible={showResult}
+        result={result}
+        onClose={() => setShowResult(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -253,60 +186,5 @@ const styles = StyleSheet.create({
   generateButtonContainer: {
     marginTop: 20,
     marginBottom: 100, // Space for fixed button
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '90%',
-    maxHeight: '80%',
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  closeButton: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  modalBody: {
-    flex: 1,
-  },
-  scoreText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  headlineText: {
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  listItem: {
-    fontSize: 14,
-    marginBottom: 8,
-    lineHeight: 20,
-  },
-  confidenceText: {
-    fontSize: 12,
-    textAlign: 'center',
-    marginTop: 20,
   },
 });
