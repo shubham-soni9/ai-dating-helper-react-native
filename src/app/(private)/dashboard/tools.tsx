@@ -51,8 +51,9 @@ export default function ToolsTab() {
     () =>
       TOOLS.filter(
         (tool) =>
-          tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          tool.description.toLowerCase().includes(searchQuery.toLowerCase())
+          tool.isReady &&
+          (tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            tool.description.toLowerCase().includes(searchQuery.toLowerCase()))
       ),
     [searchQuery]
   );
