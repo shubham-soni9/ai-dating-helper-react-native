@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTheme } from '@/theme/ThemeProvider';
 
 import { ProgressBar } from '../components/onboarding/ProgressBar';
 import { QuestionHeader } from '../components/onboarding/QuestionHeader';
@@ -100,6 +101,7 @@ const QUESTIONS: Question[] = [
 
 export default function OnboardingQuestionScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
   const [selections, setSelections] = useState<Record<string, string[]>>({});
   const [showSkipModal, setShowSkipModal] = useState(false);
@@ -160,23 +162,25 @@ export default function OnboardingQuestionScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#121212]" edges={['top', 'bottom']}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      edges={['top', 'bottom']}>
       <StatusBar barStyle="light-content" />
 
-      <View className="flex-1 px-6">
+      <View style={styles.contentContainer}>
         {/* Top Bar */}
-        <View className="mb-4 flex-row items-center justify-between">
+        <View style={styles.topBar}>
           <TouchableOpacity
-            className="h-10 w-10 items-center justify-center rounded-full bg-[#1E1E1E]"
+            style={[styles.iconButton, { backgroundColor: colors.surface }]}
             onPress={() => console.log('Play audio')}>
-            <Ionicons name="volume-high-outline" size={20} color="white" />
+            <Ionicons name="volume-high-outline" size={20} color={colors.text} />
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="flex-row items-center rounded-full bg-[#1E1E1E] px-3 py-2"
+            style={[styles.languageButton, { backgroundColor: colors.surface }]}
             onPress={() => setLanguage((prev) => (prev === 'EN' ? 'ES' : 'EN'))}>
-            <Ionicons name="globe-outline" size={16} color="#9CA3AF" />
-            <Text className="ml-2 font-medium text-gray-400">{language}</Text>
+            <Ionicons name="globe-outline" size={16} color={colors.mutedText} />
+            <Text style={[styles.languageText, { color: colors.mutedText }]}>{language}</Text>
           </TouchableOpacity>
         </View>
 
@@ -221,3 +225,37 @@ export default function OnboardingQuestionScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  topBar: {
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  languageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  languageText: {
+    marginLeft: 8,
+    fontWeight: '500',
+  },
+});

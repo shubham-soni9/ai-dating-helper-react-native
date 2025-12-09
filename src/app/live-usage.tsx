@@ -9,10 +9,12 @@ import {
   Platform,
   LayoutAnimation,
   UIManager,
+  StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
+import { useTheme } from '@/theme/ThemeProvider';
 
 import { GirlMessage, UserMessage, WizardMessage } from '../components/live-chat/ChatBubbles';
 import ScoreModal from '../components/live-chat/ScoreModal';
@@ -29,6 +31,7 @@ type Status = 'idle' | 'analyzing' | 'scored' | 'wizard_typing' | 'ready_to_proc
 
 export default function LiveUsage() {
   const router = useRouter();
+  const { colors } = useTheme();
   const [inputText, setInputText] = useState('');
   const [sentMessage, setSentMessage] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>('idle');
@@ -119,14 +122,16 @@ export default function LiveUsage() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-900">
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1">
-        <View className="relative flex-1 px-4 pt-4">
+        style={styles.container}>
+        <View style={styles.contentContainer}>
           {/* Header */}
-          <View className="mb-6 items-center">
-            <Text className="text-lg font-bold text-white">Test Your Social Skills...</Text>
+          <View style={styles.header}>
+            <Text style={[styles.headerText, { color: colors.text }]}>
+              Test Your Social Skills...
+            </Text>
           </View>
 
           <ScrollView
@@ -183,11 +188,13 @@ export default function LiveUsage() {
 
           {/* Proceed Button */}
           {status === 'ready_to_proceed' && (
-            <Animated.View entering={SlideInDown} className="absolute bottom-8 left-4 right-4">
+            <Animated.View entering={SlideInDown} style={styles.proceedButtonContainer}>
               <TouchableOpacity
                 onPress={handleProceed}
-                className="items-center rounded-xl bg-emerald-500 py-4 shadow-lg shadow-emerald-900/20">
-                <Text className="text-lg font-bold text-white">Let&apos;s Become Better</Text>
+                style={[styles.proceedButton, { backgroundColor: colors.accent }]}>
+                <Text style={[styles.proceedButtonText, { color: colors.onAccent }]}>
+                  Let&apos;s Become Better
+                </Text>
               </TouchableOpacity>
             </Animated.View>
           )}
@@ -196,3 +203,42 @@ export default function LiveUsage() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  header: {
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  proceedButtonContainer: {
+    position: 'absolute',
+    bottom: 32,
+    left: 16,
+    right: 16,
+  },
+  proceedButton: {
+    alignItems: 'center',
+    borderRadius: 12,
+    paddingVertical: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  proceedButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});

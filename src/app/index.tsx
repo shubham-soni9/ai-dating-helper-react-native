@@ -23,10 +23,10 @@ export default function App() {
     Purchases.setLogLevel(LOG_LEVEL.DEBUG);
     const revenuecatApiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
 
-    const iosApiKey = revenuecatApiKey;
-    const androidApiKey = revenuecatApiKey;
-
     if (revenuecatApiKey) {
+      const iosApiKey = revenuecatApiKey;
+      const androidApiKey = revenuecatApiKey;
+
       if (Platform.OS === 'ios') {
         Purchases.configure({ apiKey: iosApiKey, appUserID: 'shubham_soni_860' });
       } else if (Platform.OS === 'android') {
