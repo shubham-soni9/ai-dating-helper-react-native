@@ -144,12 +144,12 @@ export default function ProfileRoast() {
             onToggle={() => setShowExtraNotes(!showExtraNotes)}
           />
 
-          {/* Generate Button - Reusing existing component */}
-          <View style={styles.generateButtonContainer}>
-            <GenerateButton onPress={handleGenerate} disabled={!image?.base64 || isLoading} />
-          </View>
+          <View style={styles.bottomSpacer} />
         </View>
       </ScrollView>
+
+      {/* Generate Button - Fixed at bottom outside scroll */}
+      <GenerateButton onPress={handleGenerate} disabled={!image?.base64 || isLoading} />
 
       {/* Loading Overlay - Reusing existing component */}
       <ProgressOverlay visible={isLoading} />
@@ -170,9 +170,10 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    padding: 20,
+    paddingBottom: 100, // Space for fixed button
   },
   content: {
-    padding: 20,
     gap: 20,
   },
   section: {
@@ -183,8 +184,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 12,
   },
-  generateButtonContainer: {
-    marginTop: 20,
-    marginBottom: 100, // Space for fixed button
+  bottomSpacer: {
+    height: 20,
   },
 });

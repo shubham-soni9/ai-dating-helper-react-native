@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { ProfileRoastResult } from '@/types/profile-roast';
@@ -17,6 +18,8 @@ interface ProfileRoastResultBottomSheetProps {
   onClose: () => void;
 }
 
+const { width: screenWidth } = Dimensions.get('window');
+
 export default function ProfileRoastResultBottomSheet({
   visible,
   result,
@@ -25,6 +28,24 @@ export default function ProfileRoastResultBottomSheet({
   const { colors } = useTheme();
 
   if (!result) return null;
+
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return '#4CAF50'; // Green
+    if (score >= 60) return '#FF9800'; // Orange
+    return '#F44336'; // Red
+  };
+
+  const getScoreEmoji = (score: number) => {
+    if (score >= 80) return '🔥'; // Fire
+    if (score >= 60) return '👍'; // Thumbs up
+    return '😬'; // Grimace
+  };
+
+  const getScoreMessage = (score: number) => {
+    if (score >= 80) return 'Outstanding profile!';
+    if (score >= 60) return 'Good foundation, room to improve!';
+    return 'Time for a profile makeover!';
+  };
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -39,7 +60,7 @@ export default function ProfileRoastResultBottomSheet({
 
           {/* Header */}
           <View style={styles.header}>
-            <Text style={[styles.headerTitle, { color: colors.text }]}>Profile Roast Results</Text>
+            <Text style={[styles.headerTitle, { color: colors.text }]}>Profile Analysis</Text>
             <TouchableOpacity
               onPress={onClose}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
@@ -47,59 +68,158 @@ export default function ProfileRoastResultBottomSheet({
             </TouchableOpacity>
           </View>
 
-          {/* Content */}
-          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-            <Text style={[styles.scoreText, { color: colors.primary }]}>
-              Profile Score: {result.profileScore}/100
+          {/* Score Card - Eye catching design */}
+          <View style={styles.scoreCard}>
+            <View style={[styles.scoreCircle, { borderColor: getScoreColor(result.profileScore) }]}>
+              <Text style={[styles.scoreText, { color: getScoreColor(result.profileScore) }]}>
+                {result.profileScore}
+              </Text>
+              <Text style={[styles.scoreSubText, { color: getScoreColor(result.profileScore) }]}>
+                /100
+              </Text>
+            </View>
+            <Text style={[styles.scoreEmoji, { color: colors.text }]}>
+              {getScoreEmoji(result.profileScore)}
             </Text>
-            <Text style={[styles.headlineText, { color: colors.text }]}>
+            <Text style={[styles.scoreMessage, { color: colors.text }]}>
+              {getScoreMessage(result.profileScore)}
+            </Text>
+            <Text style={[styles.roastHeadline, { color: colors.mutedText }]}>
               {result.roastHeadline}
             </Text>
+          </View>
 
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Strengths:</Text>
-            {result.strengths.map((strength, index) => (
-              <Text key={index} style={[styles.listItem, { color: colors.text }]}>
-                • {strength}
-              </Text>
-            ))}
-
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Weaknesses:</Text>
-            {result.weaknesses.map((weakness, index) => (
-              <Text key={index} style={[styles.listItem, { color: colors.text }]}>
-                • {weakness}
-              </Text>
-            ))}
-
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Quick Fixes:</Text>
-            {result.quickFixes.map((fix, index) => (
-              <Text key={index} style={[styles.listItem, { color: colors.text }]}>
-                • {fix}
-              </Text>
-            ))}
-
-            {result.photoScores && (
-              <>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Photo Scores:</Text>
-                {result.photoScores.map((score, index) => (
-                  <Text key={index} style={[styles.listItem, { color: colors.text }]}>
-                    Photo {index + 1}: {score}/100
-                  </Text>
+          {/* Content with proper scrolling */}
+          <ScrollView
+            style={styles.content}
+            showsVerticalScrollIndicator={false}
+            bounces={true}
+            overScrollMode="never"
+            nestedScrollEnabled={true}
+            keyboardShouldPersistTaps="handled">
+            {/* Strengths Section */}
+            {result.strengths.length > 0 && (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <Text style={[styles.sectionTitle, { color: '#4CAF50' }]}>💪 Your Strengths</Text>
+                  <View style={[styles.sectionBadge, { backgroundColor: '#4CAF5020' }]}>
+                    <Text style={[styles.sectionBadgeText, { color: '#4CAF50' }]}>
+                      {result.strengths.length}
+                    </Text>
+                  </View>
+                </View>
+                {result.strengths.map((strength, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.itemCard,
+                      { backgroundColor: colors.surface, borderColor: colors.border },
+                    ]}>
+                    <Text style={[styles.itemText, { color: colors.text }]}>• {strength}</Text>
+                  </View>
                 ))}
-              </>
+              </View>
             )}
 
+            {/* Weaknesses Section */}
+            {result.weaknesses.length > 0 && (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <Text style={[styles.sectionTitle, { color: '#FF9800' }]}>
+                    ⚠️ Areas to Improve
+                  </Text>
+                  <View style={[styles.sectionBadge, { backgroundColor: '#FF980020' }]}>
+                    <Text style={[styles.sectionBadgeText, { color: '#FF9800' }]}>
+                      {result.weaknesses.length}
+                    </Text>
+                  </View>
+                </View>
+                {result.weaknesses.map((weakness, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.itemCard,
+                      { backgroundColor: colors.surface, borderColor: colors.border },
+                    ]}>
+                    <Text style={[styles.itemText, { color: colors.text }]}>• {weakness}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Quick Fixes Section */}
+            {result.quickFixes.length > 0 && (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <Text style={[styles.sectionTitle, { color: '#2196F3' }]}>🔧 Quick Fixes</Text>
+                  <View style={[styles.sectionBadge, { backgroundColor: '#2196F320' }]}>
+                    <Text style={[styles.sectionBadgeText, { color: '#2196F3' }]}>
+                      {result.quickFixes.length}
+                    </Text>
+                  </View>
+                </View>
+                {result.quickFixes.map((fix, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.itemCard,
+                      { backgroundColor: colors.surface, borderColor: colors.border },
+                    ]}>
+                    <Text style={[styles.itemText, { color: colors.text }]}>• {fix}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Photo Scores */}
+            {result.photoScores && result.photoScores.length > 0 && (
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>📸 Photo Scores</Text>
+                <View style={styles.photoScoresGrid}>
+                  {result.photoScores.map((score, index) => (
+                    <View
+                      key={index}
+                      style={[
+                        styles.photoScoreCard,
+                        { backgroundColor: colors.surface, borderColor: colors.border },
+                      ]}>
+                      <Text style={[styles.photoScoreNumber, { color: colors.text }]}>
+                        Photo {index + 1}
+                      </Text>
+                      <Text style={[styles.photoScoreValue, { color: getScoreColor(score) }]}>
+                        {score}/100
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Bio Score */}
             {result.bioScore && (
-              <>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Bio Score:</Text>
-                <Text style={[styles.listItem, { color: colors.text }]}>
-                  {result.bioScore}/100
-                </Text>
-              </>
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>📝 Bio Score</Text>
+                <View
+                  style={[
+                    styles.bioScoreCard,
+                    { backgroundColor: colors.surface, borderColor: colors.border },
+                  ]}>
+                  <Text style={[styles.bioScoreValue, { color: getScoreColor(result.bioScore) }]}>
+                    {result.bioScore}/100
+                  </Text>
+                </View>
+              </View>
             )}
 
-            <Text style={[styles.confidenceText, { color: colors.mutedText }]}>
-              Confidence: {Math.round(result.confidenceScore * 100)}%
-            </Text>
+            {/* Confidence */}
+            <View style={styles.confidenceSection}>
+              <Text style={[styles.confidenceText, { color: colors.mutedText }]}>
+                Analysis Confidence: {Math.round(result.confidenceScore * 100)}%
+              </Text>
+            </View>
+
+            {/* Bottom padding to ensure last content is visible */}
+            <View style={{ height: 40 }} />
           </ScrollView>
         </Pressable>
       </Pressable>
@@ -137,7 +257,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingBottom: 8,
   },
   headerTitle: {
     fontSize: 24,
@@ -151,7 +271,125 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
+  // Score Card Styles
+  scoreCard: {
+    alignItems: 'center',
+    paddingVertical: 24,
+    paddingHorizontal: 20,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+  },
+  scoreCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   scoreText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+  },
+  scoreSubText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  scoreEmoji: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  scoreMessage: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  roastHeadline: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  // Section Styles
+  section: {
+    marginBottom: 20,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  sectionBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  sectionBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  itemCard: {
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 8,
+  },
+  itemText: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  // Photo Scores Grid
+  photoScoresGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  photoScoreCard: {
+    flex: 1,
+    minWidth: (screenWidth - 80) / 2,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  photoScoreNumber: {
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  photoScoreValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  // Bio Score
+  bioScoreCard: {
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  bioScoreValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  // Confidence
+  confidenceSection: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  confidenceText: {
+    fontSize: 12,
+  },
+  // Legacy styles (kept for compatibility)
+  scoreTextLegacy: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -161,23 +399,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  listItem: {
-    fontSize: 14,
-    marginBottom: 6,
-    lineHeight: 20,
-  },
-  confidenceText: {
-    fontSize: 12,
-    textAlign: 'center',
-    marginTop: 20,
     marginBottom: 20,
   },
 });
