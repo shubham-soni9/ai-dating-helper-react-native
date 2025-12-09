@@ -18,6 +18,7 @@ import { VerifyStep } from '../components/auth/VerifyStep';
 import { useAuth } from '../auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
 import { useTheme } from '@/theme/ThemeProvider';
+import { STORAGE_KEYS } from '@/constants/storageConstants';
 
 type AuthStep = 'email' | 'verify';
 
@@ -33,7 +34,7 @@ export default function SignIn() {
 
   useEffect(() => {
     (async () => {
-      const seen = await SecureStore.getItemAsync('onboarding_seen');
+      const seen = await SecureStore.getItemAsync(STORAGE_KEYS.ONBOARDING_SEEN);
       setOnboardingSeen(!!seen);
     })();
   }, []);

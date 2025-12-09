@@ -1,11 +1,15 @@
-import { View, Text, Switch } from 'react-native';
+import { View, Text, Switch, ActivityIndicator } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/auth/AuthProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
 
 export default function ProfileTab() {
   const { colors, isDark, setMode } = useTheme();
   const { profile, signOut } = useAuth();
+  const router = useRouter();
+  const [isSigningOut, setIsSigningOut] = useState(false);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background, padding: 16 }}>
       <View
@@ -39,9 +43,26 @@ export default function ProfileTab() {
         <Switch value={isDark} onValueChange={(v) => setMode(v ? 'dark' : 'light')} />
       </View>
       <View style={{ height: 12 }} />
-      <Text onPress={signOut} style={{ color: colors.primary }}>
-        Sign out
+      <Text
+        onPress={async () => {
+          setIsSigningOut(true);
+          try {
+            await signOut();
+            router.replace('/welcome');
+          } catch (error) {
+            console.error('Sign out error:', error);
+          } finally {
+            setIsSigningOut(false);
+          }
+        }}
+        style={{ color: colors.primary }}>
+        {isSigningOut ? 'Signing out...' : 'Sign out'}
       </Text>
+      {isSigningOut && (
+        <View style={{ marginTop: 8 }}>
+          <ActivityIndicator color={colors.primary} />
+        </View>
+      )}
     </SafeAreaView>
   );
 }

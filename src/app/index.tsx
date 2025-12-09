@@ -5,6 +5,7 @@ import { useAuth } from '@/auth/AuthProvider';
 import '../../global.css';
 import { Platform } from 'react-native';
 import Purchases, { LOG_LEVEL } from 'react-native-purchases';
+import { STORAGE_KEYS } from '@/constants/storageConstants';
 
 export default function App() {
   const { session, subscription, initialized } = useAuth();
@@ -12,7 +13,7 @@ export default function App() {
 
   useEffect(() => {
     const load = async () => {
-      const seen = await SecureStore.getItemAsync('onboarding_seen');
+      const seen = await SecureStore.getItemAsync(STORAGE_KEYS.ONBOARDING_SEEN);
       setOnboardingSeen(seen === 'true');
     };
     load();

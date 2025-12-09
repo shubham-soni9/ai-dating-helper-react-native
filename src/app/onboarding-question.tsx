@@ -11,6 +11,7 @@ import { ActionButtons } from '../components/onboarding/ActionButtons';
 import { SkipConfirmationModal } from '../components/onboarding/SkipConfirmationModal';
 import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '@/auth/AuthProvider';
+import { STORAGE_KEYS } from '@/constants/storageConstants';
 
 // Types
 interface QuestionOption {
@@ -137,7 +138,7 @@ export default function OnboardingQuestionScreen() {
       // Finish onboarding
       console.log('Onboarding finished:', selections);
       // Here set onboardingSeen to true
-      await SecureStore.setItemAsync('onboarding_seen', 'true');
+      await SecureStore.setItemAsync(STORAGE_KEYS.ONBOARDING_SEEN, 'true');
       // If Session Does not exist, move this to create-user
       if (!session) {
         router.replace('/create-user');

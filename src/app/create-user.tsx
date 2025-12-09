@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '@/auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
 import { useTheme } from '@/theme/ThemeProvider';
+import { STORAGE_KEYS } from '@/constants/storageConstants';
 
 export default function CreateUser() {
   const [imageHeight, setImageHeight] = useState(300); // fallback
@@ -19,7 +20,7 @@ export default function CreateUser() {
 
   useEffect(() => {
     (async () => {
-      const seen = await SecureStore.getItemAsync('onboarding_seen');
+      const seen = await SecureStore.getItemAsync(STORAGE_KEYS.ONBOARDING_SEEN);
       setOnboardingSeen(!!seen);
     })();
   }, []);
