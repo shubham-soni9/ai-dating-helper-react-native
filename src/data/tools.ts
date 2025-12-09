@@ -100,7 +100,7 @@ export const TOOLS: Tool[] = [
     description: 'Receive honest feedback to optimize your dating profile effectively.',
     icon: 'flame-outline',
     route: '/tools/profile-roast',
-    isReady: false,
+    isReady: true,
     color: '#dc2626',
   },
   {
