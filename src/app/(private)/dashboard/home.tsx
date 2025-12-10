@@ -252,20 +252,6 @@ export default function HomeTab() {
             />
           </View>
         )}
-
-        {/* Daily Tips (Legacy Feature) */}
-        <View style={{ padding: 16 }}>
-          <Text style={{ fontSize: 20, fontWeight: '700', color: colors.text }}>Daily Tip</Text>
-          <Text style={{ marginTop: 6, color: colors.mutedText }}>
-            Ask about specifics in the last photo to invite reply.
-          </Text>
-          <Text style={{ fontSize: 20, fontWeight: '700', color: colors.text, marginTop: 16 }}>
-            Daily Icebreaker
-          </Text>
-          <Text style={{ marginTop: 6, color: colors.mutedText }}>
-            That trip looks epic. What was the best moment?
-          </Text>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
