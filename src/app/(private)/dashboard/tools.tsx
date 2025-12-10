@@ -1,7 +1,6 @@
 import { View, Text, Pressable, TextInput, FlatList, StyleSheet } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useMemo } from 'react';
 import { Tool } from '@/types/tools';
@@ -123,9 +122,7 @@ export default function ToolsTab() {
   );
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      edges={['top']}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View
         style={[
           styles.searchContainer,
@@ -165,7 +162,7 @@ export default function ToolsTab() {
           </View>
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

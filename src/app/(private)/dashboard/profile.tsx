@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/auth/AuthProvider';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -312,7 +311,7 @@ export default function ProfileTab() {
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Profile Header */}
         <View style={styles.headerContainer}>
@@ -402,7 +401,7 @@ export default function ProfileTab() {
         onCancel={() => setShowSignOutModal(false)}
         isLoading={isSigningOut}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
