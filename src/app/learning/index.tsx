@@ -31,8 +31,8 @@ export default function LearningListScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    loadResources();
-  }, [page, resources.length]);
+    loadResources(true);
+  }, []);
 
   const loadResources = useCallback(async (isRefresh = false) => {
     try {
@@ -61,7 +61,12 @@ export default function LearningListScreen() {
       if (isRefresh) {
         setResources(newResources);
       } else {
-        setResources((prev) => [...prev, ...newResources]);
+        setResources((prev) => {
+          const map = new Map<string, LearningResource>();
+          prev.forEach((r) => map.set(r.id, r));
+          newResources.forEach((r) => map.set(r.id, r));
+          return Array.from(map.values());
+        });
       }
 
       // Check if there are more items
@@ -252,7 +257,7 @@ export default function LearningListScreen() {
       <FlatList
         data={resources}
         renderItem={renderResource}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => (item?.id ? item.id : `lr-${index}`)}
         contentContainerStyle={styles.listContent}
         onRefresh={handleRefresh}
         refreshing={refreshing}
