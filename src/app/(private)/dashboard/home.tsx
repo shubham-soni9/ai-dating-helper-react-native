@@ -179,10 +179,7 @@ export default function HomeTab() {
         {/* User Stats and Progress */}
         {userProgress && (
           <View style={styles.section}>
-            <UserStatsBadge
-              userProgress={userProgress}
-              onPress={() => router.push('/profile/progress' as any)}
-            />
+            <UserStatsBadge userProgress={userProgress} />
           </View>
         )}
 
