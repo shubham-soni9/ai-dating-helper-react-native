@@ -14,7 +14,7 @@ export default function LegalWebView() {
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
-      edges={['bottom']}>
+      edges={['top', 'bottom']}>
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={[styles.header, { borderBottomColor: colors.border }]}>

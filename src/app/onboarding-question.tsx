@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StatusBar, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -13,6 +13,7 @@ import { SkipConfirmationModal } from '../components/onboarding/SkipConfirmation
 import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '@/auth/AuthProvider';
 import { STORAGE_KEYS } from '@/constants/storageConstants';
+import { StatusBar } from 'expo-status-bar';
 
 // Types
 interface QuestionOption {
@@ -101,7 +102,7 @@ const QUESTIONS: Question[] = [
 
 export default function OnboardingQuestionScreen() {
   const router = useRouter();
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
   const [selections, setSelections] = useState<Record<string, string[]>>({});
   const [showSkipModal, setShowSkipModal] = useState(false);
@@ -165,7 +166,7 @@ export default function OnboardingQuestionScreen() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['top', 'bottom']}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar style={isDark ? 'light' : 'dark'} />
 
       <View style={styles.contentContainer}>
         {/* Top Bar */}

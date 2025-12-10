@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PaperProvider, MD3DarkTheme } from 'react-native-paper';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
@@ -10,6 +11,7 @@ export default function RootLayout() {
       <ThemeProvider>
         <PaperThemeWrapper>
           <AuthProvider>
+            <ThemedStatusBar />
             <ThemedStack />
           </AuthProvider>
         </PaperThemeWrapper>
@@ -55,5 +57,12 @@ function ThemedStack() {
       </Stack.Protected>
       <Stack.Screen name="legal-webview" options={{ presentation: 'modal' }} />
     </Stack>
+  );
+}
+
+function ThemedStatusBar() {
+  const { colors, isDark } = useTheme();
+  return (
+    <StatusBar style={isDark ? 'light' : 'dark'} backgroundColor={colors.background} animated />
   );
 }
