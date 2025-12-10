@@ -62,6 +62,7 @@ export function RecommendedContent({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.scrollView}
         contentContainerStyle={styles.scrollContainer}>
         {resources.map((resource) => {
           const iconColor =
@@ -162,6 +163,10 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingHorizontal: 16,
     paddingRight: 32,
+    paddingVertical: 10,
+  },
+  scrollView: {
+    overflow: 'visible',
   },
   resourceCard: {
     width: width * 0.7,
