@@ -1,5 +1,8 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as NavigationBar from 'expo-navigation-bar';
+import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PaperProvider, MD3DarkTheme } from 'react-native-paper';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
@@ -11,7 +14,7 @@ export default function RootLayout() {
       <ThemeProvider>
         <PaperThemeWrapper>
           <AuthProvider>
-            <ThemedStatusBar />
+            <ThemedSystemBars />
             <ThemedStack />
           </AuthProvider>
         </PaperThemeWrapper>
@@ -60,8 +63,13 @@ function ThemedStack() {
   );
 }
 
-function ThemedStatusBar() {
+function ThemedSystemBars() {
   const { colors, isDark } = useTheme();
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    NavigationBar.setBackgroundColorAsync(colors.background);
+    NavigationBar.setButtonStyleAsync(isDark ? 'light' : 'dark');
+  }, [colors.background, isDark]);
   return (
     <StatusBar style={isDark ? 'light' : 'dark'} backgroundColor={colors.background} animated />
   );
