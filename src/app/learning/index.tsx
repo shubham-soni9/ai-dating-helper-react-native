@@ -143,7 +143,7 @@ export default function LearningListScreen() {
     const iconName = categoryIcons[item.category as keyof typeof categoryIcons] || 'document-text';
 
     return (
-      <SafeAreaView>
+      <View>
         <TouchableOpacity
           style={[styles.resourceCard, { backgroundColor: colors.surface }]}
           onPress={() => handleResourcePress(item)}
@@ -211,7 +211,7 @@ export default function LearningListScreen() {
             </View>
           )}
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
     );
   };
 
