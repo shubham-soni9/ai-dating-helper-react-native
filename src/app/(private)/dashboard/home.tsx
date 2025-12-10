@@ -79,17 +79,21 @@ export default function HomeTab() {
       const [progress, challenge, completion, content, posts, achievements] = await Promise.all([
         service.getUserProgress(),
         service.getTodayChallenge(),
-        dailyChallenge
-          ? service.getUserChallengeCompletion(dailyChallenge.id)
-          : Promise.resolve(null),
+        Promise.resolve(null), // Will get completion after challenge is loaded
         service.getRecommendedContent(5),
         service.getCommunityPosts('5'),
         service.getUserAchievements(3),
       ]);
 
+      // Get challenge completion if challenge exists
+      let challengeCompletion = null;
+      if (challenge) {
+        challengeCompletion = await service.getUserChallengeCompletion(challenge.id);
+      }
+
       setUserProgress(progress);
       setDailyChallenge(challenge);
-      setChallengeCompletion(completion);
+      setChallengeCompletion(challengeCompletion);
       setRecommendedContent(content);
       setCommunityPosts(posts);
       setRecentAchievements(achievements);

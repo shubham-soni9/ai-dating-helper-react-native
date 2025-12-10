@@ -213,6 +213,15 @@ export class HomePageAPIService {
 
       if (!challenge) throw new Error("Challenge not found");
 
+      // Check if already completed
+      const existingCompletion = await this.getUserChallengeCompletion(
+        challengeId,
+      );
+      if (existingCompletion) {
+        console.log("Challenge already completed, skipping...");
+        return;
+      }
+
       // Record completion
       const { error: completionError } = await supabase.from(
         "user_challenge_completions",
