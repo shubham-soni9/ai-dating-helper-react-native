@@ -249,7 +249,6 @@ export default function HomeTab() {
           <DailyChallengeBanner
             challenge={dailyChallenge}
             completion={challengeCompletion}
-            onPress={() => router.push('/challenges' as any)}
             onComplete={handleChallengeComplete}
           />
         )}
