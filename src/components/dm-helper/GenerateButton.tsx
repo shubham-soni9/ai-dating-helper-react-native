@@ -1,5 +1,6 @@
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface GenerateButtonProps {
   onPress: () => void;
@@ -10,7 +11,7 @@ export default function GenerateButton({ onPress, disabled }: GenerateButtonProp
   const { colors } = useTheme();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TouchableOpacity
         style={[
           styles.button,
@@ -24,7 +25,7 @@ export default function GenerateButton({ onPress, disabled }: GenerateButtonProp
         activeOpacity={0.8}>
         <Text style={styles.buttonText}>✨ Generate Suggestions</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
