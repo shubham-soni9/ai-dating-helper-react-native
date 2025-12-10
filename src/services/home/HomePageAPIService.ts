@@ -386,8 +386,13 @@ export class HomePageAPIService {
     timeSpent: number = 0
   ): Promise<void> {
     try {
-      // Record in session
-      this.sessionManager.recordContentView(contentId, contentType, timeSpent);
+      if (interactionType === 'complete') {
+        this.sessionManager.recordContentCompletion(contentId, contentType, timeSpent);
+      } else if (interactionType === 'like') {
+        this.sessionManager.recordContentLike(contentId, contentType);
+      } else {
+        return;
+      }
 
       // Record in database
       const { error } = await supabase.from('user_content_interactions').insert({

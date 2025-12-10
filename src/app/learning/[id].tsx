@@ -51,9 +51,6 @@ export default function LearningDetailScreen() {
         } else if (data) {
           setResource(data as LearningResource);
         }
-
-        // Record the interaction
-        await service.recordContentInteraction(id as string, 'article', 'view', 0);
       } catch (error) {
         console.error('Error loading resource:', error);
       } finally {
