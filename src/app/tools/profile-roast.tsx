@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -109,9 +109,12 @@ export default function ProfileRoast() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
-      <Stack.Screen options={{ headerShown: true, title: '', headerBackTitle: 'Profile Roast' }} />
-
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <Stack.Screen options={{ headerShown: true, title: 'Profile Roast', headerBackTitle: 'Profile Roast' }} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
+        style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={styles.content}>
           {/* Image Upload - Reusing DM Helper's single image picker */}
           <ImagePickerSection image={image} onImagePicked={handleImagePicked} />
@@ -146,9 +149,10 @@ export default function ProfileRoast() {
             onToggle={() => setShowExtraNotes(!showExtraNotes)}
           />
 
-          <View style={styles.bottomSpacer} />
-        </View>
-      </ScrollView>
+            <View style={styles.bottomSpacer} />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* Generate Button - Fixed at bottom outside scroll */}
       <GenerateButton onPress={handleGenerate} disabled={!image?.base64 || isLoading} />

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -145,12 +145,16 @@ export default function DeescalateTool() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
-      <Stack.Screen options={{ headerShown: true, title: '', headerBackTitle: 'De-escalator' }} />
-
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+      <Stack.Screen options={{ headerShown: true, title: 'De-escalator', headerBackTitle: 'De-escalator' }} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
+        style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}>
         <MultiImagePickerSection images={images} onImagesChange={setImages} maxImages={3} />
 
         <DeescalatorParameterSelector params={params} onParamsChange={setParams} />
@@ -162,8 +166,9 @@ export default function DeescalateTool() {
           onToggle={() => setShowExtraNotes(!showExtraNotes)}
         />
 
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
+          <View style={styles.bottomSpacer} />
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       <GenerateButton onPress={handleGenerate} disabled={images.length === 0} />
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -150,13 +150,17 @@ export default function GhostingRecovery() {
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
       <Stack.Screen
-        options={{ headerShown: true, title: '', headerBackTitle: 'Ghosting Recovery' }}
+        options={{ headerShown: true, title: 'Ghosting Recovery', headerBackTitle: 'Ghosting Recovery' }}
       />
-
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
+        style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}>
         <MultiImagePickerSection images={images} onImagesChange={setImages} maxImages={3} />
 
         <View style={styles.dropdownContainer}>
@@ -184,8 +188,9 @@ export default function GhostingRecovery() {
           onToggle={() => setShowExtraNotes(!showExtraNotes)}
         />
 
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
+          <View style={styles.bottomSpacer} />
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       <GenerateButton onPress={handleGenerate} disabled={images.length === 0} />
 
