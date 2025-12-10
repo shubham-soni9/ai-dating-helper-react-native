@@ -67,9 +67,12 @@ function ThemedSystemBars() {
   const { colors, isDark } = useTheme();
   useEffect(() => {
     if (Platform.OS !== 'android') return;
-    NavigationBar.setBackgroundColorAsync(colors.background);
-    NavigationBar.setButtonStyleAsync(isDark ? 'light' : 'dark');
-  }, [colors.background, isDark]);
+    NavigationBar.setButtonStyleAsync(isDark ? 'dark' : 'light');
+    NavigationBar.setPositionAsync('absolute');
+    NavigationBar.setBackgroundColorAsync(isDark ? '#FFFFFF' : '#000000');
+    NavigationBar.setBorderColorAsync(isDark ? '#FFFFFF' : '#000000');
+    NavigationBar.setBehaviorAsync('overlay-swipe');
+  }, [isDark]);
   return (
     <StatusBar style={isDark ? 'light' : 'dark'} backgroundColor={colors.background} animated />
   );
