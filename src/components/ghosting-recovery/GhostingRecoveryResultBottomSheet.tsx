@@ -1,15 +1,6 @@
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  Pressable,
-  FlatList,
-  Clipboard,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Pressable, FlatList } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { useTheme } from '@/theme/ThemeProvider';
 import { GhostingRecoveryResult } from '@/types/ghosting-recovery';
 
@@ -28,12 +19,14 @@ export default function GhostingRecoveryResultBottomSheet({
 }: GhostingRecoveryResultBottomSheetProps) {
   const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState<Tab>('overview');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   if (!result) return null;
 
-  const copyToClipboard = (text: string) => {
-    Clipboard.setString(text);
-    Alert.alert('Copied!', 'Message copied to clipboard');
+  const copyToClipboard = async (text: string) => {
+    await Clipboard.setStringAsync(text);
+    setToastMessage('Copied to clipboard');
+    setTimeout(() => setToastMessage(null), 1500);
   };
 
   const renderMessageItem = ({ item }: { item: string }) => (
@@ -275,6 +268,16 @@ export default function GhostingRecoveryResultBottomSheet({
             {activeTab === 'messages' && renderMessagesContent()}
             {activeTab === 'advice' && renderAdviceContent()}
           </View>
+
+          {toastMessage && (
+            <View
+              style={[
+                styles.toast,
+                { backgroundColor: colors.surface, borderColor: colors.border },
+              ]}>
+              <Text style={{ color: colors.text }}>{toastMessage}</Text>
+            </View>
+          )}
         </Pressable>
       </Pressable>
     </Modal>
@@ -354,6 +357,18 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 16,
+  },
+  toast: {
+    position: 'absolute',
+    bottom: 24,
+    left: 20,
+    right: 20,
+    alignSelf: 'center',
+    borderWidth: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
   },
   sectionDescription: {
     fontSize: 13,

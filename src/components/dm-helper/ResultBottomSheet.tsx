@@ -1,15 +1,6 @@
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  Pressable,
-  FlatList,
-  Clipboard,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Pressable, FlatList } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { useTheme } from '@/theme/ThemeProvider';
 import { DMResult } from '@/types/dm';
 
@@ -24,12 +15,14 @@ type Tab = 'suggestions' | 'hints';
 export default function ResultBottomSheet({ visible, result, onClose }: ResultBottomSheetProps) {
   const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState<Tab>('suggestions');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   if (!result) return null;
 
-  const copyToClipboard = (text: string) => {
-    Clipboard.setString(text);
-    Alert.alert('Copied!', 'Text copied to clipboard');
+  const copyToClipboard = async (text: string) => {
+    await Clipboard.setStringAsync(text);
+    setToastMessage('Copied to clipboard');
+    setTimeout(() => setToastMessage(null), 1500);
   };
 
   const renderSuggestionItem = ({ item, index }: { item: string; index: number }) => (
@@ -170,6 +163,16 @@ export default function ResultBottomSheet({ visible, result, onClose }: ResultBo
               </>
             )}
           </View>
+
+          {toastMessage && (
+            <View
+              style={[
+                styles.toast,
+                { backgroundColor: colors.surface, borderColor: colors.border },
+              ]}>
+              <Text style={{ color: colors.text }}>{toastMessage}</Text>
+            </View>
+          )}
         </Pressable>
       </Pressable>
     </Modal>
@@ -249,6 +252,18 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 16,
+  },
+  toast: {
+    position: 'absolute',
+    bottom: 24,
+    left: 20,
+    right: 20,
+    alignSelf: 'center',
+    borderWidth: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
   },
   contentDescription: {
     fontSize: 13,
