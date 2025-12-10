@@ -244,13 +244,15 @@ export default function HomeTab() {
           </View>
         )}
 
-        {/* Daily Challenge */}
-        <DailyChallengeBanner
-          challenge={dailyChallenge}
-          completion={challengeCompletion}
-          onPress={() => router.push('/challenges' as any)}
-          onComplete={handleChallengeComplete}
-        />
+        {/* Daily Challenge - Only show if challenge exists for current date */}
+        {dailyChallenge && (
+          <DailyChallengeBanner
+            challenge={dailyChallenge}
+            completion={challengeCompletion}
+            onPress={() => router.push('/challenges' as any)}
+            onComplete={handleChallengeComplete}
+          />
+        )}
 
         {/* Recommended Content */}
         {recommendedContent.length > 0 && (

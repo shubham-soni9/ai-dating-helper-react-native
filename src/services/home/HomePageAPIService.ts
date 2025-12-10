@@ -163,7 +163,7 @@ export class HomePageAPIService {
     try {
       const today = new Date().toISOString().split("T")[0];
 
-      // First, check if today's challenge exists and is not completed
+      // Get today's challenge (regardless of completion status)
       const { data: todayChallenge, error: todayError } = await supabase
         .from("daily_challenges")
         .select("*")
@@ -172,40 +172,9 @@ export class HomePageAPIService {
         .single();
 
       if (todayError && todayError.code !== "PGRST116") throw todayError;
-
-      // If today's challenge exists, check if it's completed
-      if (todayChallenge) {
-        const isCompleted = await this.getUserChallengeCompletion(
-          todayChallenge.id,
-        );
-        if (!isCompleted) {
-          return todayChallenge;
-        }
-      }
-
-      // If today's challenge is completed or doesn't exist, find the last uncompleted challenge
-      // Get all challenges up to today, ordered by date descending
-      const { data: allChallenges, error: allError } = await supabase
-        .from("daily_challenges")
-        .select("*")
-        .lte("date", today)
-        .eq("is_active", true)
-        .order("date", { ascending: false })
-        .limit(100); // Limit to prevent excessive queries
-
-      if (allError) throw allError;
-      if (!allChallenges || allChallenges.length === 0) return null;
-
-      // Find the first uncompleted challenge (most recent uncompleted)
-      for (const challenge of allChallenges) {
-        const isCompleted = await this.getUserChallengeCompletion(challenge.id);
-        if (!isCompleted) {
-          return challenge;
-        }
-      }
-
-      // All challenges up to today are completed
-      return null;
+      
+      // Return today's challenge if it exists (null if it doesn't exist)
+      return todayChallenge || null;
     } catch (error) {
       console.error("Error getting today challenge:", error);
       throw error;
