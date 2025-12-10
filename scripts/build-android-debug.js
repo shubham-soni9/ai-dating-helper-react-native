@@ -19,14 +19,18 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-if (!fs.existsSync(androidDir)) {
-  run(
-    'npx',
-    ['expo', 'prebuild', '--platform', 'android', '--no-install', '--non-interactive'],
-    root
-  );
+// Clean android directory if it exists to ensure fresh build
+if (fs.existsSync(androidDir)) {
+  console.log('Cleaning existing android directory...');
+  fs.rmSync(androidDir, { recursive: true, force: true });
 }
 
+// Run prebuild with --clean flag to generate fresh native code
+console.log('Running expo prebuild...');
+run('npx', ['expo', 'prebuild', '--platform', 'android', '--clean', '--no-install'], root);
+
+// Build the APK
+console.log('Building APK...');
 const gradleCmd = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
 run(gradleCmd, ['assembleDebug'], androidDir);
 
@@ -36,4 +40,6 @@ if (!fs.existsSync(apkSource)) {
 }
 
 fs.copyFileSync(apkSource, apkTarget);
-console.log('APK copied to', apkTarget);
+console.log('✅ APK copied to', apkTarget);
+console.log('\nYou can install it using:');
+console.log(`adb install ${apkTarget}`);
