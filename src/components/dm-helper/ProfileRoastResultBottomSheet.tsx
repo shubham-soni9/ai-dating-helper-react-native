@@ -123,9 +123,7 @@ export default function ProfileRoastResultBottomSheet({
           {result.weaknesses.length > 0 && (
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Text style={[styles.sectionTitle, { color: '#FF9800' }]}>
-                  ⚠️ Areas to Improve
-                </Text>
+                <Text style={[styles.sectionTitle, { color: '#FF9800' }]}>⚠️ Areas to Improve</Text>
                 <View style={[styles.sectionBadge, { backgroundColor: '#FF980020' }]}>
                   <Text style={[styles.sectionBadgeText, { color: '#FF9800' }]}>
                     {result.weaknesses.length}

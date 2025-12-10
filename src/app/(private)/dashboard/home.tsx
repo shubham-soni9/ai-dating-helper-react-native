@@ -181,41 +181,7 @@ export default function HomeTab() {
           />
         )}
 
-        {/* Daily Challenge */}
-        <DailyChallengeBanner
-          challenge={dailyChallenge}
-          completion={challengeCompletion}
-          onPress={() => router.push('/challenges' as any)}
-          onComplete={handleChallengeComplete}
-        />
-
-        {/* Recommended Content */}
-        {recommendedContent.length > 0 && (
-          <RecommendedContent
-            resources={recommendedContent}
-            onResourcePress={handleResourcePress}
-            onViewAll={() => router.push('/learning' as any)}
-          />
-        )}
-
-        {/* Community Posts */}
-        {communityPosts.length > 0 && (
-          <CommunitySection
-            posts={communityPosts}
-            onPostPress={handlePostPress}
-            onViewAll={() => router.push('/community' as any)}
-          />
-        )}
-
-        {/* Recent Achievements */}
-        {recentAchievements.length > 0 && (
-          <RecentAchievements
-            achievements={recentAchievements}
-            onViewAll={() => router.push('/profile/achievements' as any)}
-          />
-        )}
-
-        {/* Recent Tools (Legacy Feature) */}
+        {/* Recently Used Tools - Now First Section */}
         {recent.length > 0 && (
           <View style={{ paddingVertical: 16 }}>
             <Text style={{ marginLeft: 16, fontSize: 18, fontWeight: '600', color: colors.text }}>
@@ -251,6 +217,40 @@ export default function HomeTab() {
               )}
             />
           </View>
+        )}
+
+        {/* Daily Challenge */}
+        <DailyChallengeBanner
+          challenge={dailyChallenge}
+          completion={challengeCompletion}
+          onPress={() => router.push('/challenges' as any)}
+          onComplete={handleChallengeComplete}
+        />
+
+        {/* Recommended Content */}
+        {recommendedContent.length > 0 && (
+          <RecommendedContent
+            resources={recommendedContent}
+            onResourcePress={handleResourcePress}
+            onViewAll={() => router.push('/learning' as any)}
+          />
+        )}
+
+        {/* Community Posts */}
+        {communityPosts.length > 0 && (
+          <CommunitySection
+            posts={communityPosts}
+            onPostPress={handlePostPress}
+            onViewAll={() => router.push('/community' as any)}
+          />
+        )}
+
+        {/* Recent Achievements */}
+        {recentAchievements.length > 0 && (
+          <RecentAchievements
+            achievements={recentAchievements}
+            onViewAll={() => router.push('/profile/achievements' as any)}
+          />
         )}
       </ScrollView>
     </SafeAreaView>
