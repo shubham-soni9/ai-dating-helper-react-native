@@ -73,7 +73,17 @@ export function RecommendedContent({
           return (
             <TouchableOpacity
               key={resource.id}
-              style={[styles.resourceCard, { backgroundColor: colors.surface }]}
+              style={[
+                styles.resourceCard,
+                {
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                  shadowOpacity: 0.06,
+                  shadowRadius: 3,
+                  elevation: 2,
+                },
+              ]}
               onPress={() => onResourcePress(resource)}
               activeOpacity={0.8}>
               <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
@@ -105,7 +115,7 @@ export function RecommendedContent({
                 </View>
               </View>
 
-              <View style={styles.footer}>
+              <View style={[styles.footer, { borderTopColor: colors.border }]}>
                 <View style={styles.statsContainer}>
                   <View style={styles.statItem}>
                     <Ionicons name="eye" size={12} color={colors.mutedText} />

@@ -70,7 +70,17 @@ export function RecentAchievements({ achievements, onViewAll }: RecentAchievemen
           return (
             <View
               key={achievement.id}
-              style={[styles.achievementCard, { backgroundColor: colors.surface }]}>
+              style={[
+                styles.achievementCard,
+                {
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                  shadowOpacity: 0.06,
+                  shadowRadius: 3,
+                  elevation: 2,
+                },
+              ]}>
               <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
                 <Ionicons name={iconName as any} size={28} color={iconColor} />
               </View>
@@ -85,7 +95,7 @@ export function RecentAchievements({ achievements, onViewAll }: RecentAchievemen
                 {achievement.description}
               </Text>
 
-              <View style={styles.footer}>
+              <View style={[styles.footer, { borderTopColor: colors.border }]}>
                 <View style={[styles.xpBadge, { backgroundColor: '#F59E0B' + '20' }]}>
                   <Ionicons name="star" size={12} color="#F59E0B" />
                   <Text style={[styles.xpText, { color: '#F59E0B' }]}>

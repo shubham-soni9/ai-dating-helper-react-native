@@ -174,7 +174,7 @@ export default function HomeTab() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}>
+        contentContainerStyle={[styles.contentContainer, { paddingBottom: 96 }]}>
         {/* User Stats and Progress */}
         {userProgress && (
           <View style={styles.section}>

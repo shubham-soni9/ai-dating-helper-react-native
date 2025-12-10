@@ -50,7 +50,18 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
       <View style={[styles.modalOverlay, { backgroundColor: 'rgba(0,0,0,0.5)' }]}>
-        <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+        <View
+          style={[
+            styles.modalContent,
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border,
+              borderWidth: 1,
+              shadowOpacity: 0.12,
+              shadowRadius: 6,
+              elevation: 4,
+            },
+          ]}>
           <Text style={[styles.modalTitle, { color: colors.text }]}>{title}</Text>
           <Text style={[styles.modalMessage, { color: colors.mutedText }]}>{message}</Text>
 
@@ -318,7 +329,13 @@ export default function ProfileTab() {
           <View
             style={[
               styles.profileCard,
-              { backgroundColor: colors.surface, borderColor: colors.border },
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+                shadowOpacity: 0.06,
+                shadowRadius: 3,
+                elevation: 2,
+              },
             ]}>
             <View style={styles.profileHeader}>
               <View style={[styles.avatarContainer, { backgroundColor: colors.primary + '20' }]}>

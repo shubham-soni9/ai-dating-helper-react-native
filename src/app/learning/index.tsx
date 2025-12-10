@@ -145,7 +145,17 @@ export default function LearningListScreen() {
     return (
       <View>
         <TouchableOpacity
-          style={[styles.resourceCard, { backgroundColor: colors.surface }]}
+          style={[
+            styles.resourceCard,
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border,
+              borderWidth: 1,
+              shadowOpacity: 0.06,
+              shadowRadius: 3,
+              elevation: 2,
+            },
+          ]}
           onPress={() => handleResourcePress(item)}
           activeOpacity={0.8}>
           <View style={styles.cardHeader}>
@@ -205,7 +215,7 @@ export default function LearningListScreen() {
           </View>
 
           {item.url && (
-            <View style={styles.urlIndicator}>
+            <View style={[styles.urlIndicator, { borderTopColor: colors.border }]}>
               <Ionicons name="globe" size={12} color={colors.primary} />
               <Text style={[styles.urlText, { color: colors.primary }]}>Web Article</Text>
             </View>
@@ -248,7 +258,7 @@ export default function LearningListScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.header}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBackButton}>
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>

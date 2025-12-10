@@ -152,7 +152,7 @@ export default function LearningDetailScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.header}>
+      <View style={[styles.header, { borderBottomWidth: 1, borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBackButton}>
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
@@ -178,7 +178,15 @@ export default function LearningDetailScreen() {
           />
           {/* Complete Button for WebView */}
           <TouchableOpacity
-            style={[styles.completeButtonSticky, { backgroundColor: colors.primary }]}
+            style={[
+              styles.completeButtonSticky,
+              {
+                backgroundColor: colors.primary,
+                shadowOpacity: 0.08,
+                shadowRadius: 6,
+                elevation: 3,
+              },
+            ]}
             onPress={handleComplete}>
             <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
             <Text style={styles.completeButtonText}>Complete (+{resource.xp_reward} XP)</Text>
@@ -188,7 +196,18 @@ export default function LearningDetailScreen() {
         // Content Mode (existing implementation)
         <ScrollView contentContainerStyle={styles.scrollContent}>
           {/* Content */}
-          <View style={[styles.contentCard, { backgroundColor: colors.surface }]}>
+          <View
+            style={[
+              styles.contentCard,
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+                borderWidth: 1,
+                shadowOpacity: 0.06,
+                shadowRadius: 3,
+                elevation: 2,
+              },
+            ]}>
             {/* Category Icon */}
             <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
               <Ionicons name={iconName as any} size={32} color={iconColor} />
@@ -264,7 +283,15 @@ export default function LearningDetailScreen() {
 
           {/* Action Button */}
           <TouchableOpacity
-            style={[styles.completeButton, { backgroundColor: colors.primary }]}
+            style={[
+              styles.completeButton,
+              {
+                backgroundColor: colors.primary,
+                shadowOpacity: 0.08,
+                shadowRadius: 6,
+                elevation: 3,
+              },
+            ]}
             onPress={handleComplete}>
             <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
             <Text style={styles.completeButtonText}>Complete (+{resource.xp_reward} XP)</Text>

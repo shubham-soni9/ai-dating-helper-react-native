@@ -53,7 +53,17 @@ export function DailyChallengeBanner({
 
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor: colors.surface }]}
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          borderWidth: 1,
+          shadowOpacity: 0.06,
+          shadowRadius: 3,
+          elevation: 2,
+        },
+      ]}
       onPress={handlePress}
       activeOpacity={0.8}>
       <View style={styles.header}>
@@ -73,7 +83,7 @@ export function DailyChallengeBanner({
         {challenge.description}
       </Text>
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
         <View style={styles.rewardContainer}>
           <Ionicons name="star" size={14} color="#F59E0B" />
           <Text style={[styles.rewardText, { color: colors.mutedText }]}>

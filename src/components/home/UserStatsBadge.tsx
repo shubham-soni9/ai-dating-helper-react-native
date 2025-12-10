@@ -41,7 +41,17 @@ export function UserStatsBadge({ userProgress, onPress }: UserStatsBadgeProps) {
 
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor: colors.surface }]}
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          borderWidth: 1,
+          shadowOpacity: 0.06,
+          shadowRadius: 3,
+          elevation: 2,
+        },
+      ]}
       onPress={onPress}
       activeOpacity={0.8}>
       <View style={styles.levelContainer}>
@@ -55,7 +65,7 @@ export function UserStatsBadge({ userProgress, onPress }: UserStatsBadgeProps) {
           <Text style={[styles.xpText, { color: colors.mutedText }]}>
             {userProgress.total_xp} XP
           </Text>
-          <View style={styles.progressBarContainer}>
+          <View style={[styles.progressBarContainer, { backgroundColor: colors.border }] }>
             <View
               style={[
                 styles.progressBar,
@@ -73,7 +83,7 @@ export function UserStatsBadge({ userProgress, onPress }: UserStatsBadgeProps) {
       </View>
 
       {userProgress.weekly_streak > 0 && (
-        <View style={styles.streakContainer}>
+        <View style={[styles.streakContainer, { borderTopColor: colors.border }] }>
           <Ionicons name="flame" size={16} color="#F59E0B" />
           <Text style={[styles.streakText, { color: '#F59E0B' }]}>
             {userProgress.weekly_streak} day streak

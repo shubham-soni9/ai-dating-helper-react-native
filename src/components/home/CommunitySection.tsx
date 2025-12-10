@@ -79,7 +79,17 @@ export function CommunitySection({ posts, onPostPress, onViewAll }: CommunitySec
           return (
             <TouchableOpacity
               key={post.id}
-              style={[styles.postCard, { backgroundColor: colors.surface }]}
+              style={[
+                styles.postCard,
+                {
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                  shadowOpacity: 0.06,
+                  shadowRadius: 3,
+                  elevation: 2,
+                },
+              ]}
               onPress={() => onPostPress(post)}
               activeOpacity={0.8}>
               {post.is_featured && (
@@ -107,7 +117,7 @@ export function CommunitySection({ posts, onPostPress, onViewAll }: CommunitySec
                 {post.content}
               </Text>
 
-              <View style={styles.postFooter}>
+              <View style={[styles.postFooter, { borderTopColor: colors.border }]}>
                 <View style={styles.statsContainer}>
                   <View style={styles.statItem}>
                     <Ionicons name="heart" size={14} color={colors.mutedText} />
