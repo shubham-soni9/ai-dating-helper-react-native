@@ -26,7 +26,6 @@ export default function LearningDetailScreen() {
   const [resource, setResource] = useState<LearningResource | null>(null);
   const [loading, setLoading] = useState(true);
   const [apiService, setApiService] = useState<HomePageAPIService | null>(null);
-  const [showWebView, setShowWebView] = useState(false);
   const [webViewLoading, setWebViewLoading] = useState(true);
 
   const loadResource = useCallback(
@@ -51,10 +50,6 @@ export default function LearningDetailScreen() {
           }
         } else if (data) {
           setResource(data as LearningResource);
-          // Auto-show webview if URL is available
-          if (data.url) {
-            setShowWebView(true);
-          }
         }
 
         // Record the interaction
@@ -158,30 +153,17 @@ export default function LearningDetailScreen() {
     return labels[level - 1] || 'Medium';
   };
 
-  const toggleViewMode = () => {
-    setShowWebView(!showWebView);
-  };
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBackButton}>
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: colors.text }]}>Learning Resource</Text>
-        {resource?.url && (
-          <TouchableOpacity onPress={toggleViewMode} style={styles.viewModeButton}>
-            <Ionicons
-              name={showWebView ? 'document-text' : 'globe'}
-              size={24}
-              color={colors.primary}
-            />
-          </TouchableOpacity>
-        )}
+        <View style={styles.viewModeButton} />
       </View>
 
-      {showWebView && resource?.url ? (
+      {resource?.url ? (
         // WebView Mode
         <View style={styles.webViewContainer}>
           {webViewLoading && (
@@ -199,7 +181,7 @@ export default function LearningDetailScreen() {
           />
           {/* Complete Button for WebView */}
           <TouchableOpacity
-            style={[styles.completeButton, { backgroundColor: colors.primary }]}
+            style={[styles.completeButtonSticky, { backgroundColor: colors.primary }]}
             onPress={handleComplete}>
             <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
             <Text style={styles.completeButtonText}>Complete (+{resource.xp_reward} XP)</Text>
@@ -255,7 +237,9 @@ export default function LearningDetailScreen() {
             {resource.tags && resource.tags.length > 0 && (
               <View style={styles.tagsContainer}>
                 {resource.tags.map((tag, index) => (
-                  <View key={index} style={[styles.tag, { backgroundColor: colors.border }]}>
+                  <View
+                    key={`${tag}-${index}`}
+                    style={[styles.tag, { backgroundColor: colors.border }]}>
                     <Text style={[styles.tagText, { color: colors.mutedText }]}>#{tag}</Text>
                   </View>
                 ))}
@@ -418,6 +402,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginHorizontal: 16,
     marginTop: 24,
+    paddingVertical: 16,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  completeButtonSticky: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    bottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 16,
     borderRadius: 16,
     shadowColor: '#000',
