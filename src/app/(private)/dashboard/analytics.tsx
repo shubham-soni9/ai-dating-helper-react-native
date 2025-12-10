@@ -9,6 +9,7 @@ import {
   Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
@@ -36,6 +37,7 @@ type RecentTool = {
 export default function AnalyticsTab() {
   const { colors } = useTheme();
   const { session } = useAuth();
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [recentAchievements, setRecentAchievements] = useState<UserAchievement[]>([]);
@@ -199,6 +201,7 @@ export default function AnalyticsTab() {
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
                 <Pressable
+                  onPress={() => router.push(`/tools/${item.key}` as any)}
                   style={[
                     styles.toolCard,
                     { backgroundColor: colors.surface, borderColor: colors.border },
@@ -221,11 +224,11 @@ export default function AnalyticsTab() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  contentContainer: { paddingVertical: 16 },
-  header: { paddingHorizontal: 16, marginTop: 8, marginBottom: 8 },
+  contentContainer: { paddingVertical: 20 },
+  header: { paddingHorizontal: 16, marginTop: 12, marginBottom: 16 },
   title: { fontSize: 24, fontWeight: '700' },
   subtitle: { fontSize: 14, marginTop: 4 },
-  section: { marginBottom: 24 },
+  section: { marginBottom: 28 },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
   loadingText: { marginTop: 16, fontSize: 16, fontWeight: '600', textAlign: 'center' },
   metricsGrid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16 },
@@ -235,6 +238,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     borderWidth: 1,
+    marginBottom: 12,
   },
   metricIcon: {
     width: 28,
