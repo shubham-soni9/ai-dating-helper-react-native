@@ -29,6 +29,16 @@ if (fs.existsSync(androidDir)) {
 console.log('Running expo prebuild...');
 run('npx', ['expo', 'prebuild', '--platform', 'android', '--clean', '--no-install'], root);
 
+// Create local.properties file with SDK and NDK paths
+console.log('Creating local.properties...');
+const localPropertiesPath = path.join(androidDir, 'local.properties');
+const localPropertiesContent = `sdk.dir=/Users/shubhamsoni/Library/Android/sdk
+ndk.dir=/Users/shubhamsoni/Library/Android/sdk/ndk/27.1.12297006/android-ndk-r27b
+`;
+
+fs.writeFileSync(localPropertiesPath, localPropertiesContent, 'utf8');
+console.log('✅ local.properties created');
+
 // Build the APK
 console.log('Building APK...');
 const gradleCmd = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
