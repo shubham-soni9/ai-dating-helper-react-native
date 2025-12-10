@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +15,7 @@ import { HomePageAPIService } from '@/services/home/HomePageAPIService';
 import { useAuth } from '@/auth/AuthProvider';
 import { WebView } from 'react-native-webview';
 import { supabase } from '@/lib/supabase';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LearningDetailScreen() {
   const { colors } = useTheme();

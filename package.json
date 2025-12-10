@@ -2,7 +2,7 @@
   "name": "ai-dating-helper",
   "version": "1.0.0",
   "scripts": {
-    "android": "expo run:android",
+    "android": "npm run prebuild && npx expo run:android --variant debug",
     "ios": "expo run:ios",
     "start": "expo start",
     "prebuild": "expo prebuild",

@@ -5,7 +5,6 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
@@ -15,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { LearningResource } from '@/types/home';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/auth/AuthProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 const ITEMS_PER_PAGE = 10;
@@ -143,73 +143,75 @@ export default function LearningListScreen() {
     const iconName = categoryIcons[item.category as keyof typeof categoryIcons] || 'document-text';
 
     return (
-      <TouchableOpacity
-        style={[styles.resourceCard, { backgroundColor: colors.surface }]}
-        onPress={() => handleResourcePress(item)}
-        activeOpacity={0.8}>
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
-            <Ionicons name={iconName as any} size={20} color={iconColor} />
+      <SafeAreaView>
+        <TouchableOpacity
+          style={[styles.resourceCard, { backgroundColor: colors.surface }]}
+          onPress={() => handleResourcePress(item)}
+          activeOpacity={0.8}>
+          <View style={styles.cardHeader}>
+            <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
+              <Ionicons name={iconName as any} size={20} color={iconColor} />
+            </View>
+            <View style={styles.metaInfo}>
+              <Text style={[styles.categoryText, { color: iconColor }]}>
+                {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
+              </Text>
+              <Text style={[styles.dateText, { color: colors.mutedText }]}>
+                {formatDate(item.created_at)}
+              </Text>
+            </View>
           </View>
-          <View style={styles.metaInfo}>
-            <Text style={[styles.categoryText, { color: iconColor }]}>
-              {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
-            </Text>
-            <Text style={[styles.dateText, { color: colors.mutedText }]}>
-              {formatDate(item.created_at)}
-            </Text>
-          </View>
-        </View>
 
-        <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>
-          {item.title}
-        </Text>
-
-        {item.author_name && (
-          <Text style={[styles.authorText, { color: colors.mutedText }]} numberOfLines={1}>
-            By {item.author_name}
+          <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>
+            {item.title}
           </Text>
-        )}
 
-        <View style={styles.footer}>
-          <View style={styles.footerLeft}>
-            <View style={styles.metaItem}>
-              <Ionicons name="time" size={12} color={colors.mutedText} />
-              <Text style={[styles.metaText, { color: colors.mutedText }]}>
-                {formatReadTime(item.estimated_read_time)}
-              </Text>
-            </View>
-            <View style={[styles.difficultyBadge, { backgroundColor: iconColor + '20' }]}>
-              <Text style={[styles.difficultyText, { color: iconColor, fontSize: 10 }]}>
-                {getDifficultyLabel(item.difficulty_level)}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Ionicons name="eye" size={12} color={colors.mutedText} />
-              <Text style={[styles.statText, { color: colors.mutedText, fontSize: 12 }]}>
-                {item.views_count}
-              </Text>
-            </View>
-            {item.completion_count > 0 && (
-              <View style={styles.statItem}>
-                <Ionicons name="checkmark-circle" size={12} color={colors.mutedText} />
-                <Text style={[styles.statText, { color: colors.mutedText, fontSize: 12 }]}>
-                  {item.completion_count}
+          {item.author_name && (
+            <Text style={[styles.authorText, { color: colors.mutedText }]} numberOfLines={1}>
+              By {item.author_name}
+            </Text>
+          )}
+
+          <View style={styles.footer}>
+            <View style={styles.footerLeft}>
+              <View style={styles.metaItem}>
+                <Ionicons name="time" size={12} color={colors.mutedText} />
+                <Text style={[styles.metaText, { color: colors.mutedText }]}>
+                  {formatReadTime(item.estimated_read_time)}
                 </Text>
               </View>
-            )}
+              <View style={[styles.difficultyBadge, { backgroundColor: iconColor + '20' }]}>
+                <Text style={[styles.difficultyText, { color: iconColor, fontSize: 10 }]}>
+                  {getDifficultyLabel(item.difficulty_level)}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.statsContainer}>
+              <View style={styles.statItem}>
+                <Ionicons name="eye" size={12} color={colors.mutedText} />
+                <Text style={[styles.statText, { color: colors.mutedText, fontSize: 12 }]}>
+                  {item.views_count}
+                </Text>
+              </View>
+              {item.completion_count > 0 && (
+                <View style={styles.statItem}>
+                  <Ionicons name="checkmark-circle" size={12} color={colors.mutedText} />
+                  <Text style={[styles.statText, { color: colors.mutedText, fontSize: 12 }]}>
+                    {item.completion_count}
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
-        </View>
 
-        {item.url && (
-          <View style={styles.urlIndicator}>
-            <Ionicons name="globe" size={12} color={colors.primary} />
-            <Text style={[styles.urlText, { color: colors.primary }]}>Web Article</Text>
-          </View>
-        )}
-      </TouchableOpacity>
+          {item.url && (
+            <View style={styles.urlIndicator}>
+              <Ionicons name="globe" size={12} color={colors.primary} />
+              <Text style={[styles.urlText, { color: colors.primary }]}>Web Article</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </SafeAreaView>
     );
   };
 
