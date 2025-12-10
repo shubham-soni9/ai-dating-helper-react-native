@@ -11,11 +11,19 @@ import {
   Linking,
   Platform,
   StyleSheet,
+  Share,
 } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/auth/AuthProvider';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import {
+  SUPPORT_EMAIL,
+  TERMS_URL,
+  PRIVACY_URL,
+  SHARE_MESSAGE,
+  WHATSAPP_SHARE_BASE_URL,
+} from '@/constants/commonConstants';
 
 interface MenuItem {
   id: string;
@@ -107,8 +115,7 @@ export default function ProfileTab() {
   const [showSignOutModal, setShowSignOutModal] = useState(false);
 
   const openEmailClient = (subject: string, body: string = '') => {
-    const email = 'support@aidatingassistant.com';
-    const url = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const url = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
@@ -146,8 +153,7 @@ export default function ProfileTab() {
           icon: 'person-circle',
           color: '#007AFF',
           onPress: () => {
-            // Navigate to profile edit screen
-            Alert.alert('Coming Soon', 'Profile editing will be available soon!');
+            router.push('/edit-profile');
           },
           showArrow: true,
         },
@@ -158,7 +164,7 @@ export default function ProfileTab() {
           icon: 'notifications',
           color: '#FF9500',
           onPress: () => {
-            Alert.alert('Coming Soon', 'Notification settings will be available soon!');
+            router.push('/notifications');
           },
           showArrow: true,
         },
@@ -169,7 +175,7 @@ export default function ProfileTab() {
           icon: 'shield-checkmark',
           color: '#30D158',
           onPress: () => {
-            Alert.alert('Coming Soon', 'Privacy settings will be available soon!');
+            router.push('/privacy-security');
           },
           showArrow: true,
         },
@@ -224,10 +230,7 @@ export default function ProfileTab() {
           icon: 'information-circle',
           color: '#5AC8FA',
           onPress: () => {
-            Alert.alert(
-              'FAQ',
-              'Frequently Asked Questions:\n\n• How do I get better matches?\n• What tools should I use first?\n• How is my data protected?\n• Can I share my success stories?\n\nMore detailed FAQ coming soon!'
-            );
+            router.push('/faq');
           },
         },
       ],
@@ -242,10 +245,13 @@ export default function ProfileTab() {
           icon: 'star',
           color: '#FFCC00',
           onPress: () => {
-            Alert.alert('Rate AI Dating Assistant', 'Enjoying the app? Leave us a review!', [
-              { text: 'Later', style: 'cancel' },
-              { text: 'Rate Now', onPress: () => console.log('Navigate to app store') },
-            ]);
+            const url = WHATSAPP_SHARE_BASE_URL + encodeURIComponent(SHARE_MESSAGE);
+            Linking.openURL(url).catch(() => {
+              Alert.alert(
+                'WhatsApp not available',
+                'Please install WhatsApp to rate/share for now.'
+              );
+            });
           },
         },
         {
@@ -255,13 +261,7 @@ export default function ProfileTab() {
           icon: 'share-social',
           color: '#007AFF',
           onPress: () => {
-            const shareText =
-              "Check out AI Dating Assistant - it's helped me improve my dating game! 🚀";
-            Alert.alert('Share App', shareText, [
-              { text: 'Copy Link', onPress: () => console.log('Copy to clipboard') },
-              { text: 'Share', onPress: () => console.log('Open share sheet') },
-              { text: 'Cancel', style: 'cancel' },
-            ]);
+            Share.share({ message: SHARE_MESSAGE });
           },
         },
         {
@@ -271,7 +271,10 @@ export default function ProfileTab() {
           icon: 'document-text',
           color: '#8E8E93',
           onPress: () => {
-            Alert.alert('Terms of Service', 'Terms of Service will open in your browser');
+            router.push({
+              pathname: '/legal-webview',
+              params: { url: TERMS_URL, title: 'Terms & Conditions' },
+            });
           },
         },
         {
@@ -281,7 +284,10 @@ export default function ProfileTab() {
           icon: 'lock-closed',
           color: '#8E8E93',
           onPress: () => {
-            Alert.alert('Privacy Policy', 'Privacy Policy will open in your browser');
+            router.push({
+              pathname: '/legal-webview',
+              params: { url: PRIVACY_URL, title: 'Privacy Policy' },
+            });
           },
         },
         {

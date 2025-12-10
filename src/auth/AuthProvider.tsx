@@ -17,6 +17,7 @@ type AuthContextValue = {
   verifyEmailOtp: (email: string, token: string) => Promise<void>;
   signInWithOAuth: (provider: OAuthProvider) => Promise<void>;
   signOut: () => Promise<void>;
+  updateDisplayName: (name: string) => Promise<void>;
   initialized: boolean;
 };
 
@@ -140,6 +141,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   };
 
+  const updateDisplayName = async (name: string) => {
+    await supabase.auth.updateUser({ data: { name } });
+    const { data } = await supabase.auth.getUser();
+    const u = data.user;
+    if (u) {
+      setProfile({
+        id: u.id ?? '',
+        name: u.user_metadata?.name,
+        email: u.email ?? undefined,
+        avatarUrl: u.user_metadata?.avatar_url,
+      });
+    }
+  };
+
   const value = useMemo(
     () => ({
       session,
@@ -150,6 +165,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       verifyEmailOtp,
       signInWithOAuth,
       signOut,
+      updateDisplayName,
       initialized,
     }),
     [session, profile, subscription, initialized]

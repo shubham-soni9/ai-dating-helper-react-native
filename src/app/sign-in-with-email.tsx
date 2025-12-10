@@ -19,6 +19,7 @@ import { useAuth } from '../auth/AuthProvider';
 import * as SecureStore from 'expo-secure-store';
 import { useTheme } from '@/theme/ThemeProvider';
 import { STORAGE_KEYS } from '@/constants/storageConstants';
+import { TERMS_URL, PRIVACY_URL } from '@/constants/commonConstants';
 
 type AuthStep = 'email' | 'verify';
 
@@ -150,25 +151,21 @@ export default function SignIn() {
               By continuing, you acknowledge that you understand and agree to the{' '}
               <Text
                 style={[styles.link, { color: colors.mutedText }]}
-                onPress={() =>
-                  openLegal('https://neon.com/terms-of-service', 'Terms & Conditions')
-                }>
+                onPress={() => openLegal(TERMS_URL, 'Terms & Conditions')}>
                 Terms & Conditions
               </Text>{' '}
               and{' '}
               <Text
                 style={[styles.link, { color: colors.mutedText }]}
-                onPress={() => openLegal('https://neon.com/privacy-policy', 'Privacy Policy')}>
+                onPress={() => openLegal(PRIVACY_URL, 'Privacy Policy')}>
                 Privacy Policy
               </Text>
               .
             </Text>
 
             <FooterLinks
-              onTermsPress={() =>
-                openLegal('https://neon.com/terms-of-service', 'Terms & Conditions')
-              }
-              onPrivacyPress={() => openLegal('https://neon.com/privacy-policy', 'Privacy Policy')}
+              onTermsPress={() => openLegal(TERMS_URL, 'Terms & Conditions')}
+              onPrivacyPress={() => openLegal(PRIVACY_URL, 'Privacy Policy')}
             />
           </View>
         </ScrollView>
