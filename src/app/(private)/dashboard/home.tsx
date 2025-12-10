@@ -196,7 +196,7 @@ export default function HomeTab() {
               <Text style={{ fontSize: 20, fontWeight: '700', color: colors.text }}>
                 Quick Access
               </Text>
-              <TouchableOpacity onPress={() => router.push('/tools' as any)}>
+              <TouchableOpacity onPress={() => router.push('/(private)/dashboard/tools' as any)}>
                 <Text style={{ fontSize: 14, fontWeight: '600', color: colors.primary }}>
                   View All
                 </Text>
