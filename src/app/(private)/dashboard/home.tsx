@@ -173,18 +173,22 @@ export default function HomeTab() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainer}>
         {/* User Stats and Progress */}
         {userProgress && (
-          <UserStatsBadge
-            userProgress={userProgress}
-            onPress={() => router.push('/profile/progress' as any)}
-          />
+          <View style={styles.section}>
+            <UserStatsBadge
+              userProgress={userProgress}
+              onPress={() => router.push('/profile/progress' as any)}
+            />
+          </View>
         )}
 
         {/* Recently Used Tools - Redesigned Section */}
         {recent.length > 0 && (
-          <View style={{ paddingVertical: 20 }}>
+          <View style={styles.section}>
             <View
               style={{
                 flexDirection: 'row',
@@ -246,37 +250,45 @@ export default function HomeTab() {
 
         {/* Daily Challenge - Only show if challenge exists for current date */}
         {dailyChallenge && (
-          <DailyChallengeBanner
-            challenge={dailyChallenge}
-            completion={challengeCompletion}
-            onComplete={handleChallengeComplete}
-          />
+          <View style={styles.section}>
+            <DailyChallengeBanner
+              challenge={dailyChallenge}
+              completion={challengeCompletion}
+              onComplete={handleChallengeComplete}
+            />
+          </View>
         )}
 
         {/* Recommended Content */}
         {recommendedContent.length > 0 && (
-          <RecommendedContent
-            resources={recommendedContent}
-            onResourcePress={handleResourcePress}
-            onViewAll={() => router.push('/learning' as any)}
-          />
+          <View style={styles.section}>
+            <RecommendedContent
+              resources={recommendedContent}
+              onResourcePress={handleResourcePress}
+              onViewAll={() => router.push('/learning' as any)}
+            />
+          </View>
         )}
 
         {/* Community Posts */}
         {communityPosts.length > 0 && (
-          <CommunitySection
-            posts={communityPosts}
-            onPostPress={handlePostPress}
-            onViewAll={() => router.push('/community' as any)}
-          />
+          <View style={styles.section}>
+            <CommunitySection
+              posts={communityPosts}
+              onPostPress={handlePostPress}
+              onViewAll={() => router.push('/community' as any)}
+            />
+          </View>
         )}
 
         {/* Recent Achievements */}
         {recentAchievements.length > 0 && (
-          <RecentAchievements
-            achievements={recentAchievements}
-            onViewAll={() => router.push('/profile/achievements' as any)}
-          />
+          <View style={styles.section}>
+            <RecentAchievements
+              achievements={recentAchievements}
+              onViewAll={() => router.push('/profile/achievements' as any)}
+            />
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -286,6 +298,12 @@ export default function HomeTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  contentContainer: {
+    paddingVertical: 16,
+  },
+  section: {
+    marginBottom: 24,
   },
   loadingContainer: {
     flex: 1,
