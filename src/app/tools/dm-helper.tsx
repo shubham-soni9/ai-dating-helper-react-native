@@ -142,7 +142,9 @@ export default function DMHelper() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
-      <Stack.Screen options={{ headerShown: true, title: 'DM Helper', headerBackTitle: 'DM Helper' }} />
+      <Stack.Screen
+        options={{ headerShown: true, title: 'DM Helper', headerBackTitle: 'DM Helper' }}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
@@ -152,22 +154,22 @@ export default function DMHelper() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scrollContent}>
-        <ImagePickerSection image={image} onImagePicked={setImage} />
+          <ImagePickerSection image={image} onImagePicked={setImage} />
 
-        <ParameterSelector
-          params={params}
-          onParamsChange={setParams}
-          categories={CATEGORIES}
-          tones={TONES}
-          intentions={INTENTIONS}
-        />
+          <ParameterSelector
+            params={params}
+            onParamsChange={setParams}
+            categories={CATEGORIES}
+            tones={TONES}
+            intentions={INTENTIONS}
+          />
 
-        <ExtraNotesSection
-          visible={showExtraNotes}
-          notes={extraNotes}
-          onNotesChange={setExtraNotes}
-          onToggle={() => setShowExtraNotes(!showExtraNotes)}
-        />
+          <ExtraNotesSection
+            visible={showExtraNotes}
+            notes={extraNotes}
+            onNotesChange={setExtraNotes}
+            onToggle={() => setShowExtraNotes(!showExtraNotes)}
+          />
 
           <View style={styles.bottomSpacer} />
         </ScrollView>

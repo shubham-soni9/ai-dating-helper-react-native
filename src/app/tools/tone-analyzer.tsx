@@ -141,7 +141,9 @@ export default function ToneAnalyzer() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
-      <Stack.Screen options={{ headerShown: true, title: 'Tone Analyzer', headerBackTitle: 'Tone Analyzer' }} />
+      <Stack.Screen
+        options={{ headerShown: true, title: 'Tone Analyzer', headerBackTitle: 'Tone Analyzer' }}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
@@ -151,32 +153,32 @@ export default function ToneAnalyzer() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scrollContent}>
-        <MultiImagePickerSection images={images} onImagesChange={setImages} maxImages={3} />
+          <MultiImagePickerSection images={images} onImagesChange={setImages} maxImages={3} />
 
-        <View style={styles.dropdownContainer}>
-          <Dropdown
-            value={params.analysisIntent}
-            options={ANALYSIS_INTENTS}
-            onChange={(value) => setParams({ ...params, analysisIntent: value })}
-            placeholder="What you want to analyze"
+          <View style={styles.dropdownContainer}>
+            <Dropdown
+              value={params.analysisIntent}
+              options={ANALYSIS_INTENTS}
+              onChange={(value) => setParams({ ...params, analysisIntent: value })}
+              placeholder="What you want to analyze"
+            />
+          </View>
+
+          <View style={styles.dropdownContainer}>
+            <Dropdown
+              value={params.perspective}
+              options={PERSPECTIVES}
+              onChange={(value) => setParams({ ...params, perspective: value })}
+              placeholder="Perspective"
+            />
+          </View>
+
+          <ExtraNotesSection
+            visible={showExtraNotes}
+            notes={extraNotes}
+            onNotesChange={setExtraNotes}
+            onToggle={() => setShowExtraNotes(!showExtraNotes)}
           />
-        </View>
-
-        <View style={styles.dropdownContainer}>
-          <Dropdown
-            value={params.perspective}
-            options={PERSPECTIVES}
-            onChange={(value) => setParams({ ...params, perspective: value })}
-            placeholder="Perspective"
-          />
-        </View>
-
-        <ExtraNotesSection
-          visible={showExtraNotes}
-          notes={extraNotes}
-          onNotesChange={setExtraNotes}
-          onToggle={() => setShowExtraNotes(!showExtraNotes)}
-        />
 
           <View style={styles.bottomSpacer} />
         </ScrollView>

@@ -65,7 +65,7 @@ export function UserStatsBadge({ userProgress, onPress }: UserStatsBadgeProps) {
           <Text style={[styles.xpText, { color: colors.mutedText }]}>
             {userProgress.total_xp} XP
           </Text>
-          <View style={[styles.progressBarContainer, { backgroundColor: colors.border }] }>
+          <View style={[styles.progressBarContainer, { backgroundColor: colors.border }]}>
             <View
               style={[
                 styles.progressBar,
@@ -83,7 +83,7 @@ export function UserStatsBadge({ userProgress, onPress }: UserStatsBadgeProps) {
       </View>
 
       {userProgress.weekly_streak > 0 && (
-        <View style={[styles.streakContainer, { borderTopColor: colors.border }] }>
+        <View style={[styles.streakContainer, { borderTopColor: colors.border }]}>
           <Ionicons name="flame" size={16} color="#F59E0B" />
           <Text style={[styles.streakText, { color: '#F59E0B' }]}>
             {userProgress.weekly_streak} day streak

@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -109,45 +117,49 @@ export default function ProfileRoast() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
-      <Stack.Screen options={{ headerShown: true, title: 'Profile Roast', headerBackTitle: 'Profile Roast' }} />
+      <Stack.Screen
+        options={{ headerShown: true, title: 'Profile Roast', headerBackTitle: 'Profile Roast' }}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
         style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-        <View style={styles.content}>
-          {/* Image Upload - Reusing DM Helper's single image picker */}
-          <ImagePickerSection image={image} onImagePicked={handleImagePicked} />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled">
+          <View style={styles.content}>
+            {/* Image Upload - Reusing DM Helper's single image picker */}
+            <ImagePickerSection image={image} onImagePicked={handleImagePicked} />
 
-          {/* Roast Intent - Reusing Dropdown component */}
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Roast Style</Text>
-            <Dropdown
-              value={params.roastIntent}
-              options={ROAST_INTENTS}
-              onChange={(value) => setParams((prev) => ({ ...prev, roastIntent: value }))}
-              placeholder="Select roast style"
+            {/* Roast Intent - Reusing Dropdown component */}
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Roast Style</Text>
+              <Dropdown
+                value={params.roastIntent}
+                options={ROAST_INTENTS}
+                onChange={(value) => setParams((prev) => ({ ...prev, roastIntent: value }))}
+                placeholder="Select roast style"
+              />
+            </View>
+
+            {/* Focus Area - Reusing Dropdown component */}
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Focus On</Text>
+              <Dropdown
+                value={params.focusArea}
+                options={FOCUS_AREAS}
+                onChange={(value) => setParams((prev) => ({ ...prev, focusArea: value }))}
+                placeholder="Select focus area"
+              />
+            </View>
+
+            {/* Extra Notes - Reusing existing component */}
+            <ExtraNotesSection
+              visible={showExtraNotes}
+              notes={extraNotes}
+              onNotesChange={setExtraNotes}
+              onToggle={() => setShowExtraNotes(!showExtraNotes)}
             />
-          </View>
-
-          {/* Focus Area - Reusing Dropdown component */}
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Focus On</Text>
-            <Dropdown
-              value={params.focusArea}
-              options={FOCUS_AREAS}
-              onChange={(value) => setParams((prev) => ({ ...prev, focusArea: value }))}
-              placeholder="Select focus area"
-            />
-          </View>
-
-          {/* Extra Notes - Reusing existing component */}
-          <ExtraNotesSection
-            visible={showExtraNotes}
-            notes={extraNotes}
-            onNotesChange={setExtraNotes}
-            onToggle={() => setShowExtraNotes(!showExtraNotes)}
-          />
 
             <View style={styles.bottomSpacer} />
           </View>

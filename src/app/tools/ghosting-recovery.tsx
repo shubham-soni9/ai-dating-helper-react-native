@@ -150,7 +150,11 @@ export default function GhostingRecovery() {
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
       <Stack.Screen
-        options={{ headerShown: true, title: 'Ghosting Recovery', headerBackTitle: 'Ghosting Recovery' }}
+        options={{
+          headerShown: true,
+          title: 'Ghosting Recovery',
+          headerBackTitle: 'Ghosting Recovery',
+        }}
       />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -161,32 +165,32 @@ export default function GhostingRecovery() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scrollContent}>
-        <MultiImagePickerSection images={images} onImagesChange={setImages} maxImages={3} />
+          <MultiImagePickerSection images={images} onImagesChange={setImages} maxImages={3} />
 
-        <View style={styles.dropdownContainer}>
-          <Dropdown
-            value={params.analysisIntent}
-            options={ANALYSIS_INTENTS}
-            onChange={(value) => setParams({ ...params, analysisIntent: value })}
-            placeholder="What do you want?"
+          <View style={styles.dropdownContainer}>
+            <Dropdown
+              value={params.analysisIntent}
+              options={ANALYSIS_INTENTS}
+              onChange={(value) => setParams({ ...params, analysisIntent: value })}
+              placeholder="What do you want?"
+            />
+          </View>
+
+          <View style={styles.dropdownContainer}>
+            <Dropdown
+              value={params.perspective}
+              options={PERSPECTIVES}
+              onChange={(value) => setParams({ ...params, perspective: value })}
+              placeholder="Who stopped replying?"
+            />
+          </View>
+
+          <ExtraNotesSection
+            visible={showExtraNotes}
+            notes={extraNotes}
+            onNotesChange={setExtraNotes}
+            onToggle={() => setShowExtraNotes(!showExtraNotes)}
           />
-        </View>
-
-        <View style={styles.dropdownContainer}>
-          <Dropdown
-            value={params.perspective}
-            options={PERSPECTIVES}
-            onChange={(value) => setParams({ ...params, perspective: value })}
-            placeholder="Who stopped replying?"
-          />
-        </View>
-
-        <ExtraNotesSection
-          visible={showExtraNotes}
-          notes={extraNotes}
-          onNotesChange={setExtraNotes}
-          onToggle={() => setShowExtraNotes(!showExtraNotes)}
-        />
 
           <View style={styles.bottomSpacer} />
         </ScrollView>

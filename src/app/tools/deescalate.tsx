@@ -145,7 +145,9 @@ export default function DeescalateTool() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={['bottom', 'left', 'right']}>
-      <Stack.Screen options={{ headerShown: true, title: 'De-escalator', headerBackTitle: 'De-escalator' }} />
+      <Stack.Screen
+        options={{ headerShown: true, title: 'De-escalator', headerBackTitle: 'De-escalator' }}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
@@ -155,16 +157,16 @@ export default function DeescalateTool() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scrollContent}>
-        <MultiImagePickerSection images={images} onImagesChange={setImages} maxImages={3} />
+          <MultiImagePickerSection images={images} onImagesChange={setImages} maxImages={3} />
 
-        <DeescalatorParameterSelector params={params} onParamsChange={setParams} />
+          <DeescalatorParameterSelector params={params} onParamsChange={setParams} />
 
-        <ExtraNotesSection
-          visible={showExtraNotes}
-          notes={extraNotes}
-          onNotesChange={setExtraNotes}
-          onToggle={() => setShowExtraNotes(!showExtraNotes)}
-        />
+          <ExtraNotesSection
+            visible={showExtraNotes}
+            notes={extraNotes}
+            onNotesChange={setExtraNotes}
+            onToggle={() => setShowExtraNotes(!showExtraNotes)}
+          />
 
           <View style={styles.bottomSpacer} />
         </ScrollView>
