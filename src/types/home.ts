@@ -59,6 +59,7 @@ export interface LearningResource {
   views_count: number;
   completion_count: number;
   is_active: boolean;
+  url?: string;
   created_at: string;
   updated_at: string;
 }
@@ -86,8 +87,8 @@ export interface UserContentInteraction {
   id: string;
   user_id: string;
   content_id: string;
-  content_type: 'article' | 'quiz' | 'video' | 'tip';
-  interaction_type: 'view' | 'like' | 'share' | 'complete' | 'bookmark';
+  content_type: "article" | "quiz" | "video" | "tip";
+  interaction_type: "view" | "like" | "share" | "complete" | "bookmark";
   time_spent: number;
   session_id: string;
   created_at: string;
@@ -130,11 +131,11 @@ export interface AchievementDefinition {
   category: string;
   unlock_condition: {
     type:
-      | 'content_views'
-      | 'content_completions'
-      | 'challenge_completions'
-      | 'consecutive_days'
-      | 'total_xp';
+      | "content_views"
+      | "content_completions"
+      | "challenge_completions"
+      | "consecutive_days"
+      | "total_xp";
     threshold: number;
     content_category?: string;
   };

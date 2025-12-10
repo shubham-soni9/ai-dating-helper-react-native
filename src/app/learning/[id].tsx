@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   StyleSheet,
   SafeAreaView,
   ActivityIndicator,
-  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -15,8 +14,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { LearningResource } from '@/types/home';
 import { HomePageAPIService } from '@/services/home/HomePageAPIService';
 import { useAuth } from '@/auth/AuthProvider';
-
-const { width } = Dimensions.get('window');
+import { WebView } from 'react-native-webview';
+import { supabase } from '@/lib/supabase';
 
 export default function LearningDetailScreen() {
   const { colors } = useTheme();
@@ -27,6 +26,47 @@ export default function LearningDetailScreen() {
   const [resource, setResource] = useState<LearningResource | null>(null);
   const [loading, setLoading] = useState(true);
   const [apiService, setApiService] = useState<HomePageAPIService | null>(null);
+  const [showWebView, setShowWebView] = useState(false);
+  const [webViewLoading, setWebViewLoading] = useState(true);
+
+  const loadResource = useCallback(
+    async (service: HomePageAPIService) => {
+      try {
+        setLoading(true);
+
+        // Fetch the resource from the API
+        const { data, error } = await supabase
+          .from('learning_resources')
+          .select('*')
+          .eq('id', id)
+          .eq('is_active', true)
+          .single();
+
+        if (error) {
+          if (error.code === 'PGRST116') {
+            // Resource not found
+            setResource(null);
+          } else {
+            throw error;
+          }
+        } else if (data) {
+          setResource(data as LearningResource);
+          // Auto-show webview if URL is available
+          if (data.url) {
+            setShowWebView(true);
+          }
+        }
+
+        // Record the interaction
+        await service.recordContentInteraction(id as string, 'article', 'view', 0);
+      } catch (error) {
+        console.error('Error loading resource:', error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [id]
+  );
 
   useEffect(() => {
     if (session?.userId) {
@@ -34,45 +74,7 @@ export default function LearningDetailScreen() {
       setApiService(service);
       loadResource(service);
     }
-  }, [session?.userId, id]);
-
-  const loadResource = async (service: HomePageAPIService) => {
-    try {
-      setLoading(true);
-
-      // For now, we'll create a mock resource since we don't have a specific API method
-      // In a real implementation, you would fetch the resource by ID from your backend
-      const mockResource: LearningResource = {
-        id: id as string,
-        title: 'Mastering Online Dating Conversations',
-        content:
-          'This comprehensive guide will help you master the art of online dating conversations. Learn how to start engaging conversations, keep them flowing naturally, and build meaningful connections through messaging.',
-        category: 'messaging',
-        difficulty_level: 2,
-        estimated_read_time: 8,
-        xp_reward: 25,
-        is_featured: true,
-        tags: ['messaging', 'conversation', 'dating'],
-        author_name: 'Dating Coach Sarah',
-        author_title: 'Certified Relationship Expert',
-        likes_count: 142,
-        views_count: 1250,
-        completion_count: 89,
-        is_active: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
-      setResource(mockResource);
-
-      // Record the interaction
-      await service.recordContentInteraction(id as string, 'article', 'view', 0);
-    } catch (error) {
-      console.error('Error loading resource:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [session?.userId, id, loadResource]);
 
   const handleComplete = async () => {
     if (apiService && resource) {
@@ -114,7 +116,7 @@ export default function LearningDetailScreen() {
           <Ionicons name="document-text-outline" size={64} color={colors.mutedText} />
           <Text style={[styles.emptyTitle, { color: colors.text }]}>Resource Not Found</Text>
           <Text style={[styles.emptyDescription, { color: colors.mutedText }]}>
-            The learning resource you're looking for doesn't exist or has been removed.
+            The learning resource you&apos;re looking for doesn&apos;t exist or has been removed.
           </Text>
           <TouchableOpacity
             style={[styles.backButton, { backgroundColor: colors.primary }]}
@@ -156,99 +158,138 @@ export default function LearningDetailScreen() {
     return labels[level - 1] || 'Medium';
   };
 
+  const toggleViewMode = () => {
+    setShowWebView(!showWebView);
+  };
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.headerBackButton}>
-            <Ionicons name="arrow-back" size={24} color={colors.text} />
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.headerBackButton}>
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Learning Resource</Text>
+        {resource?.url && (
+          <TouchableOpacity onPress={toggleViewMode} style={styles.viewModeButton}>
+            <Ionicons
+              name={showWebView ? 'document-text' : 'globe'}
+              size={24}
+              color={colors.primary}
+            />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: colors.text }]}>Learning Resource</Text>
-          <View style={{ width: 24 }} />
+        )}
+      </View>
+
+      {showWebView && resource?.url ? (
+        // WebView Mode
+        <View style={styles.webViewContainer}>
+          {webViewLoading && (
+            <View style={styles.webViewLoading}>
+              <ActivityIndicator size="large" color={colors.primary} />
+              <Text style={[styles.loadingText, { color: colors.text }]}>Loading article...</Text>
+            </View>
+          )}
+          <WebView
+            source={{ uri: resource.url }}
+            style={styles.webView}
+            onLoadStart={() => setWebViewLoading(true)}
+            onLoadEnd={() => setWebViewLoading(false)}
+            startInLoadingState={false}
+          />
+          {/* Complete Button for WebView */}
+          <TouchableOpacity
+            style={[styles.completeButton, { backgroundColor: colors.primary }]}
+            onPress={handleComplete}>
+            <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
+            <Text style={styles.completeButtonText}>Complete (+{resource.xp_reward} XP)</Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Content */}
-        <View style={[styles.contentCard, { backgroundColor: colors.surface }]}>
-          {/* Category Icon */}
-          <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
-            <Ionicons name={iconName as any} size={32} color={iconColor} />
-          </View>
-
-          {/* Title */}
-          <Text style={[styles.title, { color: colors.text }]}>{resource.title}</Text>
-
-          {/* Author */}
-          {resource.author_name && (
-            <View style={styles.authorContainer}>
-              <Text style={[styles.authorName, { color: colors.text }]}>
-                {resource.author_name}
-              </Text>
-              {resource.author_title && (
-                <Text style={[styles.authorTitle, { color: colors.mutedText }]}>
-                  {resource.author_title}
-                </Text>
-              )}
-            </View>
-          )}
-
-          {/* Meta Info */}
-          <View style={styles.metaContainer}>
-            <View style={styles.metaItem}>
-              <Ionicons name="time" size={16} color={colors.mutedText} />
-              <Text style={[styles.metaText, { color: colors.mutedText }]}>
-                {formatReadTime(resource.estimated_read_time)}
-              </Text>
-            </View>
-
-            <View style={[styles.difficultyBadge, { backgroundColor: iconColor + '20' }]}>
-              <Text style={[styles.difficultyText, { color: iconColor }]}>
-                {getDifficultyLabel(resource.difficulty_level)}
-              </Text>
-            </View>
-          </View>
-
+      ) : (
+        // Content Mode (existing implementation)
+        <ScrollView contentContainerStyle={styles.scrollContent}>
           {/* Content */}
-          <Text style={[styles.content, { color: colors.text }]}>{resource.content}</Text>
-
-          {/* Tags */}
-          {resource.tags && resource.tags.length > 0 && (
-            <View style={styles.tagsContainer}>
-              {resource.tags.map((tag, index) => (
-                <View key={index} style={[styles.tag, { backgroundColor: colors.border }]}>
-                  <Text style={[styles.tagText, { color: colors.mutedText }]}>#{tag}</Text>
-                </View>
-              ))}
+          <View style={[styles.contentCard, { backgroundColor: colors.surface }]}>
+            {/* Category Icon */}
+            <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
+              <Ionicons name={iconName as any} size={32} color={iconColor} />
             </View>
-          )}
 
-          {/* Stats */}
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Ionicons name="eye" size={16} color={colors.mutedText} />
-              <Text style={[styles.statText, { color: colors.mutedText }]}>
-                {resource.views_count} views
-              </Text>
-            </View>
-            {resource.completion_count > 0 && (
-              <View style={styles.statItem}>
-                <Ionicons name="checkmark-circle" size={16} color={colors.mutedText} />
-                <Text style={[styles.statText, { color: colors.mutedText }]}>
-                  {resource.completion_count} completed
+            {/* Title */}
+            <Text style={[styles.title, { color: colors.text }]}>{resource.title}</Text>
+
+            {/* Author */}
+            {resource.author_name && (
+              <View style={styles.authorContainer}>
+                <Text style={[styles.authorName, { color: colors.text }]}>
+                  {resource.author_name}
                 </Text>
+                {resource.author_title && (
+                  <Text style={[styles.authorTitle, { color: colors.mutedText }]}>
+                    {resource.author_title}
+                  </Text>
+                )}
               </View>
             )}
-          </View>
-        </View>
 
-        {/* Action Button */}
-        <TouchableOpacity
-          style={[styles.completeButton, { backgroundColor: colors.primary }]}
-          onPress={handleComplete}>
-          <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
-          <Text style={styles.completeButtonText}>Complete (+{resource.xp_reward} XP)</Text>
-        </TouchableOpacity>
-      </ScrollView>
+            {/* Meta Info */}
+            <View style={styles.metaContainer}>
+              <View style={styles.metaItem}>
+                <Ionicons name="time" size={16} color={colors.mutedText} />
+                <Text style={[styles.metaText, { color: colors.mutedText }]}>
+                  {formatReadTime(resource.estimated_read_time)}
+                </Text>
+              </View>
+
+              <View style={[styles.difficultyBadge, { backgroundColor: iconColor + '20' }]}>
+                <Text style={[styles.difficultyText, { color: iconColor }]}>
+                  {getDifficultyLabel(resource.difficulty_level)}
+                </Text>
+              </View>
+            </View>
+
+            {/* Content */}
+            <Text style={[styles.content, { color: colors.text }]}>{resource.content}</Text>
+
+            {/* Tags */}
+            {resource.tags && resource.tags.length > 0 && (
+              <View style={styles.tagsContainer}>
+                {resource.tags.map((tag, index) => (
+                  <View key={index} style={[styles.tag, { backgroundColor: colors.border }]}>
+                    <Text style={[styles.tagText, { color: colors.mutedText }]}>#{tag}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Stats */}
+            <View style={styles.statsContainer}>
+              <View style={styles.statItem}>
+                <Ionicons name="eye" size={16} color={colors.mutedText} />
+                <Text style={[styles.statText, { color: colors.mutedText }]}>
+                  {resource.views_count} views
+                </Text>
+              </View>
+              {resource.completion_count > 0 && (
+                <View style={styles.statItem}>
+                  <Ionicons name="checkmark-circle" size={16} color={colors.mutedText} />
+                  <Text style={[styles.statText, { color: colors.mutedText }]}>
+                    {resource.completion_count} completed
+                  </Text>
+                </View>
+              )}
+            </View>
+          </View>
+
+          {/* Action Button */}
+          <TouchableOpacity
+            style={[styles.completeButton, { backgroundColor: colors.primary }]}
+            onPress={handleComplete}>
+            <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
+            <Text style={styles.completeButtonText}>Complete (+{resource.xp_reward} XP)</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
@@ -426,5 +467,26 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
+  },
+  viewModeButton: {
+    padding: 8,
+  },
+  webViewContainer: {
+    flex: 1,
+  },
+  webView: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  webViewLoading: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    zIndex: 1,
   },
 });
