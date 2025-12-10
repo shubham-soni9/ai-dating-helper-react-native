@@ -223,7 +223,7 @@ export default function AnalyticsTab() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  contentContainer: { paddingVertical: 20 },
+  contentContainer: { paddingBottom: 8 },
   header: { paddingHorizontal: 16, marginTop: 12, marginBottom: 16 },
   title: { fontSize: 24, fontWeight: '700' },
   subtitle: { fontSize: 14, marginTop: 4 },

@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingVertical: 16,
+    paddingBottom: 8,
   },
   section: {
     marginBottom: 24,
