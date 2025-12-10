@@ -1,0 +1,430 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  ActivityIndicator,
+  Dimensions,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/theme/ThemeProvider';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { LearningResource } from '@/types/home';
+import { HomePageAPIService } from '@/services/home/HomePageAPIService';
+import { useAuth } from '@/auth/AuthProvider';
+
+const { width } = Dimensions.get('window');
+
+export default function LearningDetailScreen() {
+  const { colors } = useTheme();
+  const router = useRouter();
+  const { id } = useLocalSearchParams();
+  const { session } = useAuth();
+
+  const [resource, setResource] = useState<LearningResource | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [apiService, setApiService] = useState<HomePageAPIService | null>(null);
+
+  useEffect(() => {
+    if (session?.userId) {
+      const service = new HomePageAPIService(session.userId);
+      setApiService(service);
+      loadResource(service);
+    }
+  }, [session?.userId, id]);
+
+  const loadResource = async (service: HomePageAPIService) => {
+    try {
+      setLoading(true);
+
+      // For now, we'll create a mock resource since we don't have a specific API method
+      // In a real implementation, you would fetch the resource by ID from your backend
+      const mockResource: LearningResource = {
+        id: id as string,
+        title: 'Mastering Online Dating Conversations',
+        content:
+          'This comprehensive guide will help you master the art of online dating conversations. Learn how to start engaging conversations, keep them flowing naturally, and build meaningful connections through messaging.',
+        category: 'messaging',
+        difficulty_level: 2,
+        estimated_read_time: 8,
+        xp_reward: 25,
+        is_featured: true,
+        tags: ['messaging', 'conversation', 'dating'],
+        author_name: 'Dating Coach Sarah',
+        author_title: 'Certified Relationship Expert',
+        likes_count: 142,
+        views_count: 1250,
+        completion_count: 89,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      setResource(mockResource);
+
+      // Record the interaction
+      await service.recordContentInteraction(id as string, 'article', 'view', 0);
+    } catch (error) {
+      console.error('Error loading resource:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleComplete = async () => {
+    if (apiService && resource) {
+      try {
+        // Record completion interaction
+        await apiService.recordContentInteraction(
+          resource.id,
+          'article',
+          'complete',
+          resource.estimated_read_time
+        );
+
+        // Add XP for completing
+        await apiService.addUserXP(resource.xp_reward);
+
+        // Navigate back
+        router.back();
+      } catch (error) {
+        console.error('Error completing resource:', error);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.text }]}>Loading resource...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!resource) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={styles.emptyState}>
+          <Ionicons name="document-text-outline" size={64} color={colors.mutedText} />
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>Resource Not Found</Text>
+          <Text style={[styles.emptyDescription, { color: colors.mutedText }]}>
+            The learning resource you're looking for doesn't exist or has been removed.
+          </Text>
+          <TouchableOpacity
+            style={[styles.backButton, { backgroundColor: colors.primary }]}
+            onPress={() => router.back()}>
+            <Text style={styles.backButtonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const categoryIcons = {
+    messaging: 'chatbubble',
+    profile: 'person',
+    dating: 'heart',
+    social: 'people',
+    relationship: 'infinite',
+  };
+
+  const categoryColors = {
+    messaging: '#3B82F6',
+    profile: '#10B981',
+    dating: '#EF4444',
+    social: '#8B5CF6',
+    relationship: '#F59E0B',
+  };
+
+  const iconName =
+    categoryIcons[resource.category as keyof typeof categoryIcons] || 'document-text';
+  const iconColor = categoryColors[resource.category as keyof typeof categoryColors] || '#6B7280';
+
+  const formatReadTime = (minutes: number): string => {
+    if (minutes < 1) return '< 1 min read';
+    return `${minutes} min read`;
+  };
+
+  const getDifficultyLabel = (level: number): string => {
+    const labels = ['Beginner', 'Easy', 'Medium', 'Hard', 'Expert'];
+    return labels[level - 1] || 'Medium';
+  };
+
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.headerBackButton}>
+            <Ionicons name="arrow-back" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>Learning Resource</Text>
+          <View style={{ width: 24 }} />
+        </View>
+
+        {/* Content */}
+        <View style={[styles.contentCard, { backgroundColor: colors.surface }]}>
+          {/* Category Icon */}
+          <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
+            <Ionicons name={iconName as any} size={32} color={iconColor} />
+          </View>
+
+          {/* Title */}
+          <Text style={[styles.title, { color: colors.text }]}>{resource.title}</Text>
+
+          {/* Author */}
+          {resource.author_name && (
+            <View style={styles.authorContainer}>
+              <Text style={[styles.authorName, { color: colors.text }]}>
+                {resource.author_name}
+              </Text>
+              {resource.author_title && (
+                <Text style={[styles.authorTitle, { color: colors.mutedText }]}>
+                  {resource.author_title}
+                </Text>
+              )}
+            </View>
+          )}
+
+          {/* Meta Info */}
+          <View style={styles.metaContainer}>
+            <View style={styles.metaItem}>
+              <Ionicons name="time" size={16} color={colors.mutedText} />
+              <Text style={[styles.metaText, { color: colors.mutedText }]}>
+                {formatReadTime(resource.estimated_read_time)}
+              </Text>
+            </View>
+
+            <View style={[styles.difficultyBadge, { backgroundColor: iconColor + '20' }]}>
+              <Text style={[styles.difficultyText, { color: iconColor }]}>
+                {getDifficultyLabel(resource.difficulty_level)}
+              </Text>
+            </View>
+          </View>
+
+          {/* Content */}
+          <Text style={[styles.content, { color: colors.text }]}>{resource.content}</Text>
+
+          {/* Tags */}
+          {resource.tags && resource.tags.length > 0 && (
+            <View style={styles.tagsContainer}>
+              {resource.tags.map((tag, index) => (
+                <View key={index} style={[styles.tag, { backgroundColor: colors.border }]}>
+                  <Text style={[styles.tagText, { color: colors.mutedText }]}>#{tag}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Stats */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statItem}>
+              <Ionicons name="eye" size={16} color={colors.mutedText} />
+              <Text style={[styles.statText, { color: colors.mutedText }]}>
+                {resource.views_count} views
+              </Text>
+            </View>
+            {resource.completion_count > 0 && (
+              <View style={styles.statItem}>
+                <Ionicons name="checkmark-circle" size={16} color={colors.mutedText} />
+                <Text style={[styles.statText, { color: colors.mutedText }]}>
+                  {resource.completion_count} completed
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* Action Button */}
+        <TouchableOpacity
+          style={[styles.completeButton, { backgroundColor: colors.primary }]}
+          onPress={handleComplete}>
+          <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
+          <Text style={styles.completeButtonText}>Complete (+{resource.xp_reward} XP)</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 32,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  headerBackButton: {
+    padding: 8,
+  },
+  backButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  contentCard: {
+    marginHorizontal: 16,
+    padding: 24,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  iconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 8,
+    lineHeight: 30,
+  },
+  authorContainer: {
+    marginBottom: 16,
+  },
+  authorName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  authorTitle: {
+    fontSize: 14,
+    marginTop: 2,
+  },
+  metaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  metaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  metaText: {
+    fontSize: 14,
+    marginLeft: 6,
+  },
+  difficultyBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  difficultyText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  content: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 20,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 20,
+  },
+  tag: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  tagText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  statText: {
+    fontSize: 14,
+    marginLeft: 4,
+  },
+  completeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 16,
+    marginTop: 24,
+    paddingVertical: 16,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  completeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+    marginLeft: 8,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyDescription: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});

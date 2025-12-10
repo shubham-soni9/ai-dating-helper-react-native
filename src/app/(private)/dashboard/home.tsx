@@ -4,6 +4,7 @@ import {
   Text,
   FlatList,
   Pressable,
+  TouchableOpacity,
   StyleSheet,
   ScrollView,
   ActivityIndicator,
@@ -181,18 +182,32 @@ export default function HomeTab() {
           />
         )}
 
-        {/* Recently Used Tools - Now First Section */}
+        {/* Recently Used Tools - Redesigned Section */}
         {recent.length > 0 && (
-          <View style={{ paddingVertical: 16 }}>
-            <Text style={{ marginLeft: 16, fontSize: 18, fontWeight: '600', color: colors.text }}>
-              Recently Used Tools
-            </Text>
+          <View style={{ paddingVertical: 20 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: 16,
+                marginBottom: 16,
+              }}>
+              <Text style={{ fontSize: 20, fontWeight: '700', color: colors.text }}>
+                Quick Access
+              </Text>
+              <TouchableOpacity onPress={() => router.push('/tools' as any)}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.primary }}>
+                  View All
+                </Text>
+              </TouchableOpacity>
+            </View>
             <FlatList
               horizontal
               data={recent}
               keyExtractor={(item) => item.key}
-              contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12 }}
-              ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
+              contentContainerStyle={{ paddingHorizontal: 16 }}
+              ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
                 <Pressable
@@ -203,16 +218,26 @@ export default function HomeTab() {
                       backgroundColor: colors.surface,
                       borderColor: colors.border,
                       borderWidth: 1,
-                      opacity: pressed ? 0.8 : 1,
-                      transform: [{ scale: pressed ? 0.95 : 1 }],
+                      opacity: pressed ? 0.9 : 1,
+                      transform: [{ scale: pressed ? 0.97 : 1 }],
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.1,
+                      shadowRadius: 8,
+                      elevation: 4,
                     },
                   ]}>
-                  <View style={[styles.recentToolIcon, { backgroundColor: item.color + '20' }]}>
-                    <Ionicons name={item.icon} size={24} color={item.color} />
+                  <View style={[styles.recentToolIcon, { backgroundColor: item.color + '15' }]}>
+                    <Ionicons name={item.icon} size={28} color={item.color} />
                   </View>
-                  <Text style={[styles.recentToolText, { color: colors.text }]} numberOfLines={2}>
+                  <Text
+                    style={[styles.recentToolText, { color: colors.text, marginTop: 12 }]}
+                    numberOfLines={2}>
                     {item.title}
                   </Text>
+                  <View style={{ position: 'absolute', top: 8, right: 8 }}>
+                    <Ionicons name="time-outline" size={14} color={colors.mutedText} />
+                  </View>
                 </Pressable>
               )}
             />
@@ -274,30 +299,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   recentToolCard: {
-    width: 100,
-    height: 120,
-    borderRadius: 16,
-    padding: 12,
+    width: 110,
+    height: 130,
+    borderRadius: 20,
+    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   recentToolIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
+    width: 56,
+    height: 56,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
   },
   recentToolText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
-    lineHeight: 16,
+    lineHeight: 18,
   },
 });
