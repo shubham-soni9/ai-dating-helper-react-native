@@ -124,7 +124,7 @@ Respond in the exact JSON format specified.`;
     });
 
     const completion = await client.chat.send({
-      model: 'x-ai/grok-4.1-fast',
+      model: Deno.env.get('OPENROUTER_MODEL') ?? 'x-ai/grok-4.1-fast',
       messages: [
         {
           role: 'user',
