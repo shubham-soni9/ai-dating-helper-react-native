@@ -1,0 +1,116 @@
+[
+  {
+    "q": "What is AI Dating Assistant?",
+    "a": "An app that helps you improve conversations, reduce conflicts, and craft empathetic messages using AI."
+  },
+  {
+    "q": "How do I sign up?",
+    "a": "Use email login. We send a magic link/OTP to verify your identity via Supabase Auth."
+  },
+  {
+    "q": "Is my data private?",
+    "a": "Yes. We follow GDPR principles, minimize retention, and never sell personal data."
+  },
+  {
+    "q": "What tools are available?",
+    "a": "DM Helper, Tone Analyzer, De-escalator Help, Ghosting Recovery, and Profile Roast."
+  },
+  {
+    "q": "How does DM Helper work?",
+    "a": "Upload or select screenshots; the app analyzes context and suggests thoughtful replies."
+  },
+  {
+    "q": "What is Tone Analyzer?",
+    "a": "It evaluates emotional signals and conversation health for you and the other person."
+  },
+  {
+    "q": "What is De-escalator Help?",
+    "a": "It recognizes conflict triggers and proposes steps to calm tensions with empathy."
+  },
+  {
+    "q": "What is Ghosting Recovery?",
+    "a": "Guidance for reconnecting respectfully, acknowledging space, and proposing balanced follow-ups."
+  },
+  {
+    "q": "What is Profile Roast?",
+    "a": "It assesses your dating profile and gives strengths, weaknesses, and quick fixes."
+  },
+  {
+    "q": "Do I need a subscription?",
+    "a": "Some features require a subscription handled via RevenueCat. Trials may be available."
+  },
+  {
+    "q": "How do payments work?",
+    "a": "We present a paywall; purchases are securely processed via the app stores."
+  },
+  {
+    "q": "Can I change my display name?",
+    "a": "Yes. Edit it in Profile > Profile Information. Email is read-only."
+  },
+  { "q": "What is the name character limit?", "a": "Display name supports up to 50 characters." },
+  {
+    "q": "How do I contact support?",
+    "a": "Use Profile > Contact Support to email our team with device context."
+  },
+  {
+    "q": "How do I report bugs?",
+    "a": "Use Profile > Report a Bug. Include steps, expected vs actual, and screenshots."
+  },
+  {
+    "q": "How do I request features?",
+    "a": "Use Profile > Request a Feature. Describe value and suggested behavior."
+  },
+  {
+    "q": "Where can I read Terms and Privacy?",
+    "a": "Open Terms of Service and Privacy Policy in Profile or on the sign-in screen."
+  },
+  {
+    "q": "Can I delete my account?",
+    "a": "Yes. Use Privacy & Security to request account deletion via email."
+  },
+  {
+    "q": "Which platforms are supported?",
+    "a": "Android and iOS. UI adapts to dark/light themes and platform specifics."
+  },
+  {
+    "q": "Does the app store my messages?",
+    "a": "We minimize retention. Content is processed to generate outputs and generally discarded."
+  },
+  {
+    "q": "Can I share the app?",
+    "a": "Yes. Use Share App to open the share sheet with a standard message and link."
+  },
+  {
+    "q": "How do I rate the app?",
+    "a": "Use Rate App from Profile. During early launch, it opens WhatsApp; stores links later."
+  },
+  {
+    "q": "Does the app use AI models on-device?",
+    "a": "We use cloud inference managed by secure services and APIs."
+  },
+  {
+    "q": "Can I undo actions?",
+    "a": "Generated messages are suggestions; you choose what to send and can discard any result."
+  },
+  {
+    "q": "Is there a help center?",
+    "a": "Yes. Profile > FAQ & Help Center lists common topics and guidance."
+  },
+  {
+    "q": "How do I change theme?",
+    "a": "Toggle Dark/Light mode in Profile header using the switch."
+  },
+  {
+    "q": "Why did I get a low tone score?",
+    "a": "Tone Analyzer flags sarcasm, blame, or dismissive language. Use empathy and clarity."
+  },
+  {
+    "q": "Can I analyze multiple screenshots?",
+    "a": "Yes. Upload multiple images when a tool supports it to improve context."
+  },
+  {
+    "q": "What if the analysis is wrong?",
+    "a": "Send feedback via Contact Support with examples; we continuously improve models."
+  },
+  { "q": "Do you support localization?", "a": "English-first for now. More languages are planned." }
+]
