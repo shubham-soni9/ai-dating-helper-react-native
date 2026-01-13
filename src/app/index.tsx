@@ -2,7 +2,6 @@ import { Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '@/auth/AuthProvider';
-import '../../global.css';
 import { Platform } from 'react-native';
 import Purchases, { LOG_LEVEL } from 'react-native-purchases';
 import { STORAGE_KEYS } from '@/constants/storageConstants';

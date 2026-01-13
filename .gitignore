@@ -14,7 +14,8 @@ open-router/
 
 
 ios
-android
+android/*
+!android/local.properties
 
 # macOS
 .DS_Store
