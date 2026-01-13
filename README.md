@@ -61,7 +61,7 @@ Follow these steps to set up the project locally.
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/yourusername/ai-dating-helper.git
+    git clone https://github.com/shubham-soni9/ai-dating-helper.git
     cd ai-dating-helper
     ```
 
