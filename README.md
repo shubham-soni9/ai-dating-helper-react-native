@@ -90,14 +90,11 @@ Whether you're struggling to break the ice, need a second opinion on a profile, 
 
 The app follows a modern serverless architecture:
 
-```mermaid
-graph TD
-    User[📱 Mobile App] -->|Auth & Data| Supabase[⚡ Supabase (Auth/DB)]
-    User -->|AI Request| Edge[☁️ Supabase Edge Functions]
-    Edge -->|Prompt + Image| OR[🧠 OpenRouter API]
-    OR -->|LLM Response| Edge
-    Edge -->|JSON| User
-```
+1. **User (📱 Mobile App)** connects to **Supabase (⚡ Auth/DB)** for authentication and data.
+2. **User** sends an AI Request to **Supabase Edge Functions (☁️)**.
+3. **Edge Functions** forward the Prompt + Image to **OpenRouter API (🧠)**.
+4. **OpenRouter API** returns the LLM Response to **Edge Functions**.
+5. **Edge Functions** process the response and return JSON to the **User**.
 
 ---
 
